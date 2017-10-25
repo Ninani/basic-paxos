@@ -21,8 +21,8 @@ cache:
 
 # build script
 script:
-./gradlew assemble
-./gradlew check
+  - ./gradlew assemble
+  - ./gradlew check
 
 #sudo: false
 #addons:
