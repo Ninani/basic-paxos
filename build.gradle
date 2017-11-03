@@ -1,0 +1,16 @@
+
+// Apply the java plugin to add support for Java
+apply plugin: 'java'
+
+// In this section you declare where to find the dependencies of your project
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    group = 'com.agh.edu.iosr.paxos'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = 1.8
+}

@@ -3,20 +3,25 @@
 [![Build Status](https://api.travis-ci.org/Ninani/basic-paxos.svg?branch=master)](https://travis-ci.org/Ninani/basic-paxos)
 
 
-## Server
+## Development
 
-Run (with Gradle wrapper):
-`./gradlew bootRun`
+### Server
 
+#### Run:
+From _basic-paxos_ project directory enter the command: 
 
-
-## Client
-
-Run (with Gradle wrapper):
-`./gradlew bootRun`
+`./gradlew :server:bootRun`
 
 
 
-### Useful links
+### Client
+
+#### Run:
+
+`./gradlew :client:bootRun`
+
+
+
+## Useful links
 
 [Travis setup tutorials](https://docs.travis-ci.com/user/language-specific/)
