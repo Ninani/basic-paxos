@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -21,15 +23,18 @@ import java.util.stream.Collectors;
 @RestController
 public class ClientController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
+    private static final String NO_RESPONSE_FROM_NODES = "All the nodes did not respond.";
 
     private final List<String> replicasAddresses;
     private final int halfReplicasCount;
     private final AsyncRestTemplate asyncCaller;
+    private final RestTemplate syncCaller;
 
-    public ClientController(@Value("#{'${replicas}'.split(',')}") List<String> replicasAddresses, AsyncRestTemplate asyncCaller) {
+    public ClientController(@Value("#{'${replicas}'.split(',')}") List<String> replicasAddresses, AsyncRestTemplate asyncCaller, RestTemplate syncCaller) {
         this.replicasAddresses = replicasAddresses;
         this.halfReplicasCount = replicasAddresses.size() / 2;
         this.asyncCaller = asyncCaller;
+        this.syncCaller = syncCaller;
     }
 
     @RequestMapping(value = "/read", method = RequestMethod.GET)
@@ -40,8 +45,9 @@ public class ClientController {
         while (responseCounts.size() <= halfReplicasCount && callsCyclingIterator.hasNext()) {
             Future<ResponseEntity<String>> call = callsCyclingIterator.next();
 
-            if (call.isCancelled()) { // timeout
+            if (call.isCancelled()) {
                 callsCyclingIterator.remove();
+                LOGGER.info("One of the read calls timed out.");
             } else if (call.isDone()) {
                 try {
                     ResponseEntity<String> response = call.get();
@@ -49,7 +55,7 @@ public class ClientController {
                         responseCounts.compute(response.getBody(), (rs, count) -> count == null ? 1 : count + 1);
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                    LOGGER.error("Exception: {}", e.getMessage(), e);
+                    LOGGER.error("{}", e.getMessage(), e);
                 }
                 callsCyclingIterator.remove();
             }
@@ -59,12 +65,19 @@ public class ClientController {
                 .map(responseCount -> responseCount.getValue() > halfReplicasCount ?
                         ResponseEntity.ok(responseCount.getKey()) :
                         errorResponse("No majority in the nodes' responses."))
-                .orElse(errorResponse("All the nodes did not respond."));
+                .orElse(errorResponse(NO_RESPONSE_FROM_NODES));
     }
 
     @RequestMapping(value = "/write", method = RequestMethod.POST)
-    public void write(@PathVariable String value) {
-
+    public ResponseEntity<String> write(@PathVariable String value) {
+        for (String address : replicasAddresses) {
+            try {
+                return syncCaller.exchange(address + "/write/" + value, HttpMethod.POST, null, String.class);
+            } catch (RestClientException e) {
+                LOGGER.info("Write call to " + address + " failed.");
+            }
+        }
+        return errorResponse(NO_RESPONSE_FROM_NODES);
     }
 
     private Iterator<Future<ResponseEntity<String>>> doAsyncReadCallsToReplicas() {
