@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 public class ClientController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
-    private static final String NO_RESPONSE_FROM_NODES = "All the nodes did not respond.";
+    private static final String NO_RESPONSE_FROM_REPLICAS = "All the replicas did not respond.";
 
     private final List<String> replicasAddresses;
     private final int halfReplicasCount;
@@ -64,8 +64,8 @@ public class ClientController {
         return getHighestResponseCount(responseCounts)
                 .map(responseCount -> responseCount.getValue() > halfReplicasCount ?
                         ResponseEntity.ok(responseCount.getKey()) :
-                        errorResponse("No majority in the nodes' responses."))
-                .orElse(errorResponse(NO_RESPONSE_FROM_NODES));
+                        errorResponse("No majority in the replicas' responses."))
+                .orElse(errorResponse(NO_RESPONSE_FROM_REPLICAS));
     }
 
     @RequestMapping(value = "/write", method = RequestMethod.POST)
@@ -77,7 +77,7 @@ public class ClientController {
                 LOGGER.info("Write call to " + address + " failed.");
             }
         }
-        return errorResponse(NO_RESPONSE_FROM_NODES);
+        return errorResponse(NO_RESPONSE_FROM_REPLICAS);
     }
 
     private Iterator<Future<ResponseEntity<String>>> doAsyncReadCallsToReplicas() {
