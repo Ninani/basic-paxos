@@ -68,7 +68,7 @@ public class ClientController {
                 .orElse(errorResponse(NO_RESPONSE_FROM_REPLICAS));
     }
 
-    @RequestMapping(value = "/write", method = RequestMethod.POST)
+    @RequestMapping(value = "/write/{value}", method = RequestMethod.POST)
     public ResponseEntity<String> write(@PathVariable String value) {
         for (String address : replicasAddresses) {
             try {
