@@ -1,5 +1,5 @@
 package com.agh.edu.iosr.paxos.messages;
 
-public enum PrepareStatus {
+public enum Status {
     ACCEPTED, DENIED
 }

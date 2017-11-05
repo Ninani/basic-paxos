@@ -9,6 +9,9 @@ public class PrepareRequest {
 //  with respect to other proposers’ proposal numbers.
     private int sequenceNumber;
 
+    public PrepareRequest() {
+    }
+
     public PrepareRequest(int propsedValue, int sequenceNumber) {
         this.propsedValue = propsedValue;
         this.sequenceNumber = sequenceNumber;
