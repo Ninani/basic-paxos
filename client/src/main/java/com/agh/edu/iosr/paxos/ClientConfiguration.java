@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsAsyncClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class ClientConfiguration {
@@ -25,5 +27,15 @@ public class ClientConfiguration {
     public CloseableHttpAsyncClient asyncHttpClient() {
         IOReactorConfig ioReactorConfig = IOReactorConfig.custom().setConnectTimeout(replicaCallTimeout).setSoTimeout(replicaCallTimeout).build();
         return HttpAsyncClients.custom().setDefaultIOReactorConfig(ioReactorConfig).build();
+    }
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        httpRequestFactory.setConnectionRequestTimeout(replicaCallTimeout);
+        httpRequestFactory.setConnectTimeout(replicaCallTimeout);
+        httpRequestFactory.setReadTimeout(replicaCallTimeout);
+
+        return new RestTemplate(httpRequestFactory);
     }
 }
