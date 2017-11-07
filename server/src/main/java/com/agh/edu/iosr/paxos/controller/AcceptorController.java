@@ -37,7 +37,7 @@ public class AcceptorController {
     }
 
     @PostMapping(value = "/accept")
-    public AcceptResponse accept(@RequestBody AcceptRequest acceptRequest) {
+    public ResponseEntity<AcceptResponse> accept(@RequestBody AcceptRequest acceptRequest) {
         long acceptNumber = acceptRequest.getSequenceNumber();
         long minimumNumber = minimumProposalNumber.updateAndGet(n -> acceptNumber >= n ? acceptNumber : n);
 
@@ -45,6 +45,6 @@ public class AcceptorController {
             acceptedProposal.set(new AcceptedProposal(acceptNumber, acceptRequest.getValue()));
         }
 
-        return new AcceptResponse(minimumNumber);
+        return ResponseEntity.ok(new AcceptResponse(minimumNumber));
     }
 }
