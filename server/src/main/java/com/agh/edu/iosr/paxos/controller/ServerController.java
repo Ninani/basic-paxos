@@ -93,9 +93,9 @@ public class ServerController {
                 try {
                     ResponseEntity<RS> response = call.get();
                     if (response.getStatusCode() == HttpStatus.OK) {
-                        RS prepareResponse = response.getBody();
-                        if (responseCondition.test(prepareResponse)) {
-                            responses.add(prepareResponse);
+                        RS responseBody = response.getBody();
+                        if (responseCondition.test(responseBody)) {
+                            responses.add(responseBody);
                         }
                     }
                 } catch (InterruptedException | ExecutionException e) {
