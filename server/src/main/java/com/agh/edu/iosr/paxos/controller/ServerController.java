@@ -8,11 +8,7 @@ import com.agh.edu.iosr.paxos.messages.prepare.PrepareResponse;
 import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,7 +46,7 @@ public class ServerController {
         long sequenceNumber = server.incrementAndGetSequenceNumber();
 
         PrepareRequest prepareRequest = new PrepareRequest(sequenceNumber);
-        List<PrepareResponse> promises = getResponses("/prepare", prepareRequest, PrepareResponse::isAnswer);
+        List<PrepareResponse> promises = getResponses("/prepare", prepareRequest, PrepareResponse.class, PrepareResponse::isAnswer);
 
         if (promises.size() <= server.getHalfReplicasCount()) {
             return errorResponse("Failure (prepare).");
@@ -60,7 +56,7 @@ public class ServerController {
                 .map(promiseWithHighestNumberAcceptedValue -> promiseWithHighestNumberAcceptedValue.getAcceptedProposal().getValue())
                 .orElse(value);
         AcceptRequest acceptRequest = new AcceptRequest(sequenceNumber, newValue);
-        List<AcceptResponse> acceptResponses = getResponses("/accept", acceptRequest, rs -> true);
+        List<AcceptResponse> acceptResponses = getResponses("/accept", acceptRequest, AcceptResponse.class, rs -> true);
 
         if (acceptResponses.size() <= server.getHalfReplicasCount()) {
             return errorResponse("Failure (accept).");
@@ -79,8 +75,8 @@ public class ServerController {
         return read();
     }
 
-    private <RQ, RS> List<RS> getResponses(String endPoint, RQ request, Predicate<RS> responseCondition) {
-        Iterator<Future<ResponseEntity<RS>>> callsCyclingIterator = sendAsyncPostRequestsToReplicas(endPoint, request);
+    private <RQ, RS> List<RS> getResponses(String endPoint, RQ request, Class<RS> responseType, Predicate<RS> responseCondition) {
+        Iterator<Future<ResponseEntity<RS>>> callsCyclingIterator = sendAsyncPostRequestsToReplicas(endPoint, request, responseType);
         List<RS> responses = new ArrayList<>();
 
         while (responses.size() <= server.getHalfReplicasCount() && callsCyclingIterator.hasNext()) {
@@ -108,12 +104,13 @@ public class ServerController {
         return responses;
     }
 
-    private <RQ, RS> Iterator<Future<ResponseEntity<RS>>> sendAsyncPostRequestsToReplicas(String endpoint, RQ requestBody) {
-        HttpEntity<RQ> request = new HttpEntity<>(requestBody);
+    private <RQ, RS> Iterator<Future<ResponseEntity<RS>>> sendAsyncPostRequestsToReplicas(String endpoint, RQ requestBody, Class<RS> responseType) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<RQ> request = new HttpEntity<>(requestBody, headers);
 
         List<Future<ResponseEntity<RS>>> calls = server.getReplicasAddresses().stream()
-                .map(address -> asyncCaller.exchange(address + endpoint, HttpMethod.POST, request, new ParameterizedTypeReference<RS>() {
-                }))
+                .map(address -> asyncCaller.exchange(address + endpoint, HttpMethod.POST, request, responseType))
                 .collect(Collectors.toList());
 
         return Iterables.cycle(calls).iterator();

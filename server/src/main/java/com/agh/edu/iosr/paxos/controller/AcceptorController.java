@@ -5,6 +5,7 @@ import com.agh.edu.iosr.paxos.messages.accept.AcceptResponse;
 import com.agh.edu.iosr.paxos.messages.prepare.AcceptedProposal;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareRequest;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,14 +26,14 @@ public class AcceptorController {
     }
 
     @PostMapping(value = "/prepare")
-    public PrepareResponse prepare(@RequestBody PrepareRequest prepareRequest) {
+    public ResponseEntity<PrepareResponse> prepare(@RequestBody PrepareRequest prepareRequest) {
         long prepareNumber = prepareRequest.getSequenceNumber();
 
         if (minimumProposalNumber.updateAndGet(n -> prepareNumber > n ? prepareNumber : n) == prepareNumber) {
-            return new PrepareResponse(true, acceptedProposal.get());
+            return ResponseEntity.ok(new PrepareResponse(true, acceptedProposal.get()));
         }
 
-        return new PrepareResponse(false);
+        return ResponseEntity.ok(new PrepareResponse(false));
     }
 
     @PostMapping(value = "/accept")
