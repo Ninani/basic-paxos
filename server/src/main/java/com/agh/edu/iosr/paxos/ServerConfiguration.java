@@ -5,9 +5,11 @@ import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsAsyncClientHttpRequestFactory;
 import org.springframework.web.client.AsyncRestTemplate;
 
+@Configuration
 public class ServerConfiguration {
     @Value("${replica.call.timeout}")
     private int replicaCallTimeout;
