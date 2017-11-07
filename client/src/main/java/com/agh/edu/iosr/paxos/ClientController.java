@@ -1,5 +1,6 @@
 package com.agh.edu.iosr.paxos;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +26,16 @@ public class ClientController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
     private static final String NO_RESPONSE_FROM_REPLICAS = "All the replicas did not respond.";
 
-    private final List<String> replicasAddresses;
+    private final ImmutableList<String> replicasAddresses;
     private final int halfReplicasCount;
     private final AsyncRestTemplate asyncCaller;
     private final RestTemplate syncCaller;
 
-    public ClientController(@Value("#{'${replicas}'.split(',')}") List<String> replicasAddresses, AsyncRestTemplate asyncCaller, RestTemplate syncCaller) {
-        this.replicasAddresses = replicasAddresses;
-        this.halfReplicasCount = replicasAddresses.size() / 2;
+    public ClientController(@Value("#{'${replicas}'.split(',')}") List<String> replicasAddresses,
+                            AsyncRestTemplate asyncCaller,
+                            RestTemplate syncCaller) {
+        this.replicasAddresses = ImmutableList.copyOf(new LinkedHashSet<>(replicasAddresses));
+        this.halfReplicasCount = this.replicasAddresses.size() / 2;
         this.asyncCaller = asyncCaller;
         this.syncCaller = syncCaller;
     }

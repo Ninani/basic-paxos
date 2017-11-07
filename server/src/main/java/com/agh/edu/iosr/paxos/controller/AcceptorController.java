@@ -1,42 +1,49 @@
 package com.agh.edu.iosr.paxos.controller;
 
-import com.agh.edu.iosr.paxos.messages.AcceptResponse;
-import com.agh.edu.iosr.paxos.messages.PromiseResponse;
-import com.agh.edu.iosr.paxos.service.Acceptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import com.agh.edu.iosr.paxos.messages.accept.AcceptRequest;
+import com.agh.edu.iosr.paxos.messages.accept.AcceptResponse;
+import com.agh.edu.iosr.paxos.messages.prepare.AcceptedProposal;
+import com.agh.edu.iosr.paxos.messages.prepare.PrepareRequest;
+import com.agh.edu.iosr.paxos.messages.prepare.PrepareResponse;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 @RestController
-@RequestMapping(value = "/acceptor")
 public class AcceptorController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AcceptorController.class);
+    private final AtomicLong minimumProposalNumber;
+    private final AtomicReference<AcceptedProposal> acceptedProposal;
 
-    @Value("#{'${server.port}'}")
-    private String port;
-    private Acceptor acceptor;
-
-    public AcceptorController(Acceptor acceptor) {
-        this.acceptor = acceptor;
+    public AcceptorController() {
+        this.minimumProposalNumber = new AtomicLong();
+        this.acceptedProposal = new AtomicReference<>();
     }
 
-    @GetMapping(value = "/prepare/{sequence}")
-    public PromiseResponse getPrepareRequest(@PathVariable("sequence") long sequenceNumber) {
-        LOGGER.debug("Received prepare request with sequence number {}", sequenceNumber);
-        PromiseResponse promiseResponse = acceptor.processPrepareRequest(sequenceNumber);
-        LOGGER.debug("Status: {} (seqNumber: {})", promiseResponse.getStatus(), promiseResponse.getSequenceNumber());
-        return promiseResponse;
+    @PostMapping(value = "/prepare")
+    public PrepareResponse prepare(@RequestBody PrepareRequest prepareRequest) {
+        long prepareNumber = prepareRequest.getSequenceNumber();
+
+        if (minimumProposalNumber.updateAndGet(n -> prepareNumber > n ? prepareNumber : n) == prepareNumber) {
+            return new PrepareResponse(true, acceptedProposal.get());
+        }
+
+        return new PrepareResponse(false);
     }
 
-    @GetMapping (value = "/accept/{sequence}/{value}")
-    public AcceptResponse postAcceptRequest(@PathVariable("sequence") long sequenceNumber, @PathVariable("value") String value) {
-        LOGGER.debug("Received AcceptRequest with sequence number: {}, and value: {}", sequenceNumber, value);
-        AcceptResponse acceptResponse = acceptor.processAcceptRequest(sequenceNumber, value);
-        LOGGER.debug("Status: {} ", acceptResponse.getStatus());
-        return acceptResponse;
-    }
+    @PostMapping(value = "/accept")
+    public AcceptResponse accept(@RequestBody AcceptRequest acceptRequest) {
+        long acceptNumber = acceptRequest.getSequenceNumber();
+        long minimumNumber = minimumProposalNumber.updateAndGet(n -> acceptNumber >= n ? acceptNumber : n);
 
+        if (minimumNumber == acceptNumber) {
+            acceptedProposal.set(new AcceptedProposal(acceptNumber, acceptRequest.getValue()));
+        }
+
+        return new AcceptResponse(minimumNumber);
+    }
 }
