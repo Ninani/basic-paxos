@@ -46,7 +46,7 @@ public class ServerController {
         long sequenceNumber = server.incrementAndGetSequenceNumber();
 
         PrepareRequest prepareRequest = new PrepareRequest(sequenceNumber);
-        List<PrepareResponse> promises = getResponses("/prepare", prepareRequest, PrepareResponse.class, PrepareResponse::isAnswerPositive);
+        List<PrepareResponse> promises = getResponses("/prepare", prepareRequest, PrepareResponse.class, PrepareResponse::isAnswer);
 
         if (promises.size() <= server.getHalfReplicasCount()) {
             return errorResponse("Failure (no majority in the prepare responses).");
