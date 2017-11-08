@@ -46,13 +46,16 @@ public class ServerController {
         long sequenceNumber = server.incrementAndGetSequenceNumber();
 
         PrepareRequest prepareRequest = new PrepareRequest(sequenceNumber);
-        List<PrepareResponse> promises = getResponses("/prepare", prepareRequest, PrepareResponse.class, PrepareResponse::isAnswerPositive);
+        List<PrepareResponse> promises = getResponses("/prepare", prepareRequest, PrepareResponse.class, PrepareResponse::getAnswer);
 
         if (promises.size() <= server.getHalfReplicasCount()) {
             return errorResponse("Failure (no majority in the prepare responses).");
         }
 
-        String newValue = promises.stream().sorted().findFirst()
+        String newValue = promises.stream()
+                .filter(promise -> promise.getAcceptedProposal() != null)
+                .sorted((p1, p2) -> Long.compare(p2.getAcceptedProposal().getSequenceNumber(), p1.getAcceptedProposal().getSequenceNumber()))
+                .findFirst()
                 .map(promiseWithHighestNumberAcceptedValue -> promiseWithHighestNumberAcceptedValue.getAcceptedProposal().getValue())
                 .orElse(value);
         AcceptRequest acceptRequest = new AcceptRequest(sequenceNumber, newValue);
@@ -67,7 +70,7 @@ public class ServerController {
         }
 
         server.getReplicasAddresses().forEach(address -> asyncCaller.exchange(address + "/learn/" + newValue, HttpMethod.POST, null, String.class));
-        server.setValue(newValue); // in case the async learn request to the server itself will not finish before read()
+        server.setValue(value); // in case the async learn request to the server itself will not finish before read()
 
         return read();
     }
