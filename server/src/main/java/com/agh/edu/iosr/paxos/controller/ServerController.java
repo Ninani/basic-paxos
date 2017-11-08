@@ -46,10 +46,10 @@ public class ServerController {
         long sequenceNumber = server.incrementAndGetSequenceNumber();
 
         PrepareRequest prepareRequest = new PrepareRequest(sequenceNumber);
-        List<PrepareResponse> promises = getResponses("/prepare", prepareRequest, PrepareResponse.class, PrepareResponse::isAnswer);
+        List<PrepareResponse> promises = getResponses("/prepare", prepareRequest, PrepareResponse.class, PrepareResponse::isAnswerPositive);
 
         if (promises.size() <= server.getHalfReplicasCount()) {
-            return errorResponse("Failure (prepare).");
+            return errorResponse("Failure (no majority in the prepare responses).");
         }
 
         String newValue = promises.stream().sorted().findFirst()
@@ -59,14 +59,13 @@ public class ServerController {
         List<AcceptResponse> acceptResponses = getResponses("/accept", acceptRequest, AcceptResponse.class, rs -> true);
 
         if (acceptResponses.size() <= server.getHalfReplicasCount()) {
-            return errorResponse("Failure (accept).");
+            return errorResponse("Failure (no majority in the accept responses).");
         }
 
         long highestAcceptorNumber = acceptResponses.stream().sorted().findFirst().get().getSequenceNumber();
 
         if (highestAcceptorNumber > sequenceNumber) {
-            server.setSequenceNumber(highestAcceptorNumber);
-            return write(newValue);
+            return errorResponse("Failure (at least one acceptor had accepted a proposal with a higher sequence number).");
         }
 
         server.getReplicasAddresses().forEach(address -> asyncCaller.exchange(address + "/learn/" + newValue, HttpMethod.POST, null, String.class));

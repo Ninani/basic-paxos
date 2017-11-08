@@ -17,7 +17,7 @@ public class PrepareResponse implements Comparable<PrepareResponse> {
         this.acceptedProposal = acceptedProposal;
     }
 
-    public boolean isAnswer() {
+    public boolean isAnswerPositive() {
         return answer;
     }
 
