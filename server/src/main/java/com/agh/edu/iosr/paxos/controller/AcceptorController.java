@@ -5,6 +5,7 @@ import com.agh.edu.iosr.paxos.messages.accept.AcceptResponse;
 import com.agh.edu.iosr.paxos.messages.prepare.AcceptedProposal;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareRequest;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareResponse;
+import com.agh.edu.iosr.paxos.service.AcceptorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,34 +18,19 @@ import java.util.concurrent.atomic.AtomicReference;
 @RestController
 public class AcceptorController {
 
-    private final AtomicLong minimumProposalNumber;
-    private final AtomicReference<AcceptedProposal> acceptedProposal;
+    private AcceptorService acceptorService;
 
-    public AcceptorController() {
-        this.minimumProposalNumber = new AtomicLong();
-        this.acceptedProposal = new AtomicReference<>();
+    public AcceptorController(AcceptorService acceptorService) {
+        this.acceptorService = acceptorService;
     }
 
     @PostMapping(value = "/prepare")
     public ResponseEntity<PrepareResponse> prepare(@RequestBody PrepareRequest prepareRequest) {
-        long prepareNumber = prepareRequest.getSequenceNumber();
-
-        if (minimumProposalNumber.updateAndGet(n -> prepareNumber > n ? prepareNumber : n) == prepareNumber) {
-            return ResponseEntity.ok(new PrepareResponse(true, acceptedProposal.get()));
-        }
-
-        return ResponseEntity.ok(new PrepareResponse(false));
+        return ResponseEntity.ok(acceptorService.prepare(prepareRequest));
     }
 
     @PostMapping(value = "/accept")
     public ResponseEntity<AcceptResponse> accept(@RequestBody AcceptRequest acceptRequest) {
-        long acceptNumber = acceptRequest.getSequenceNumber();
-        long minimumNumber = minimumProposalNumber.updateAndGet(n -> acceptNumber >= n ? acceptNumber : n);
-
-        if (minimumNumber == acceptNumber) {
-            acceptedProposal.set(new AcceptedProposal(acceptNumber, acceptRequest.getValue()));
-        }
-
-        return ResponseEntity.ok(new AcceptResponse(minimumNumber));
+        return ResponseEntity.ok(acceptorService.accept(acceptRequest));
     }
 }
