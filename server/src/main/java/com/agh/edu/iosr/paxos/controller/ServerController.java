@@ -62,9 +62,7 @@ public class ServerController {
             return errorResponse("Failure (no majority in the accept responses).");
         }
 
-        long highestAcceptorNumber = acceptResponses.stream().sorted().findFirst().get().getSequenceNumber();
-
-        if (highestAcceptorNumber > sequenceNumber) {
+        if (acceptResponses.stream().anyMatch(acceptResponse -> acceptResponse.getSequenceNumber() > sequenceNumber)) {
             return errorResponse("Failure (at least one acceptor had accepted a proposal with a higher sequence number).");
         }
 
