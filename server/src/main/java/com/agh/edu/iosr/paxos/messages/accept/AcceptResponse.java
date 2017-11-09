@@ -1,6 +1,6 @@
 package com.agh.edu.iosr.paxos.messages.accept;
 
-public class AcceptResponse implements Comparable<AcceptResponse> {
+public class AcceptResponse {
     private long sequenceNumber;
 
     public AcceptResponse() {
@@ -16,10 +16,5 @@ public class AcceptResponse implements Comparable<AcceptResponse> {
 
     public void setSequenceNumber(long sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
-    }
-
-    @Override
-    public int compareTo(AcceptResponse other) {
-        return Long.compare(other.sequenceNumber, this.sequenceNumber);
     }
 }
