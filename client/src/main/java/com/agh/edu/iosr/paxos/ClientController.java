@@ -54,6 +54,7 @@ public class ClientController {
             } else if (call.isDone()) {
                 try {
                     ResponseEntity<String> response = call.get();
+
                     if (response.getStatusCode() == HttpStatus.OK) {
                         responseCounts.compute(response.getBody(), (rs, count) -> count == null ? 1 : count + 1);
                     }
