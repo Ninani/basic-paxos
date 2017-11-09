@@ -71,4 +71,19 @@ public class ProposerServiceTest {
 
         fail();
     }
+
+    @Test
+    public void test_proposerHasToUpdateValueAndIsAcceptedByMajority() throws Exception {
+        server.setSequenceNumber(3); // will send 4
+
+        doReturn(ImmutableList.of(new PrepareResponse(true, new AcceptedProposal(2, "two")), new PrepareResponse(true, new AcceptedProposal(3, "three")))).when(proposerService).prepare(anyLong());
+
+        AcceptResponse acceptResponse = new AcceptResponse(4);
+        doReturn(ImmutableList.of(acceptResponse, acceptResponse)).when(proposerService).accept(anyLong(), anyString());
+
+        proposerService.propose("four");
+
+        verify(proposerService, times(1)).propose(anyString());
+        verify(proposerService, times(1)).accept(4, "three");
+    }
 }
