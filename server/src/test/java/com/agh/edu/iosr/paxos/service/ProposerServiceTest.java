@@ -1,7 +1,10 @@
 package com.agh.edu.iosr.paxos.service;
 
 import com.agh.edu.iosr.paxos.Server;
+import com.agh.edu.iosr.paxos.messages.accept.AcceptResponse;
 import com.agh.edu.iosr.paxos.messages.prepare.AcceptedProposal;
+import com.agh.edu.iosr.paxos.messages.prepare.PrepareResponse;
+import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -9,7 +12,7 @@ import org.mockito.Mockito;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ProposerServiceTest {
     private Server server;
@@ -19,7 +22,7 @@ public class ProposerServiceTest {
     public void setUp() throws Exception {
         this.server = Mockito.spy(new Server());
         when(server.getHalfReplicasCount()).thenReturn(1);
-        this.proposerService = new ProposerService(server, null);
+        this.proposerService = Mockito.spy(new ProposerService(server, null));
     }
 
     @Test
@@ -36,10 +39,10 @@ public class ProposerServiceTest {
 
     @Test
     public void test() throws Exception {
-//        server.setSequenceNumber(1);
-//        when(proposerService.prepare(any())).thenReturn(ImmutableList.of(new PrepareResponse(true), new PrepareResponse(true)));
-//        when(proposerService.accept(any(), any())).thenReturn(ImmutableList.of(new AcceptResponse(1), new AcceptResponse(1)));
-//        proposerService.propose("test");
-//        verify(proposerService, times(1)).propose(any());
+        server.setSequenceNumber(1);
+        doReturn(ImmutableList.of(new PrepareResponse(true), new PrepareResponse(true))).when(proposerService).prepare(anyLong());
+        doReturn(ImmutableList.of(new AcceptResponse(1), new AcceptResponse(1))).when(proposerService).accept(anyLong(), anyString());
+        proposerService.propose("test");
+        verify(proposerService, times(1)).propose(anyString());
     }
 }
