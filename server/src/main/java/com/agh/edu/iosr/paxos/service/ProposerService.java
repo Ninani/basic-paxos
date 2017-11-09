@@ -109,6 +109,7 @@ public class ProposerService {
     private <RQ, RS> Iterator<Future<ResponseEntity<RS>>> sendAsyncPostRequestsToReplicas(String endpoint, RQ requestBody, Class<RS> responseType) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("port", server.getPort());
         HttpEntity<RQ> request = new HttpEntity<>(requestBody, headers);
 
         List<Future<ResponseEntity<RS>>> calls = server.getReplicasAddresses().stream()

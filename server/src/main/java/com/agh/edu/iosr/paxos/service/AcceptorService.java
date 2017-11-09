@@ -73,6 +73,7 @@ public class AcceptorService {
 
     private void notifyLearners(AcceptedProposal acceptedProposal) {
         HttpHeaders headers = new HttpHeaders();
+        headers.add("port", server.getPort());
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<AcceptedProposal> request = new HttpEntity<>(acceptedProposal, headers);
         server.getReplicasAddresses().forEach(address -> asyncCaller.exchange(address + "/learn/", HttpMethod.POST, request, String.class));

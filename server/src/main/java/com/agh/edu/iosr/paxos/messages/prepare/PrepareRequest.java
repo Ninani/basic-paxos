@@ -18,4 +18,11 @@ public class PrepareRequest {
     public void setSequenceNumber(Long sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
+
+    @Override
+    public String toString() {
+        return "PrepareRequest{" +
+                "sequenceNumber=" + sequenceNumber +
+                '}';
+    }
 }

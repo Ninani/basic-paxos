@@ -27,4 +27,12 @@ public class AcceptRequest {
     public void setValue(String value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "AcceptRequest{" +
+                "sequenceNumber=" + sequenceNumber +
+                ", value='" + value + '\'' +
+                '}';
+    }
 }

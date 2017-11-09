@@ -32,4 +32,12 @@ public class PrepareResponse {
     public void setAcceptedProposal(AcceptedProposal acceptedProposal) {
         this.acceptedProposal = acceptedProposal;
     }
+
+    @Override
+    public String toString() {
+        return "PrepareResponse{" +
+                "answer=" + answer +
+                ", acceptedProposal=" + acceptedProposal +
+                '}';
+    }
 }

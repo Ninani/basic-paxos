@@ -17,4 +17,11 @@ public class AcceptResponse {
     public void setSequenceNumber(long sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
+
+    @Override
+    public String toString() {
+        return "AcceptResponse{" +
+                "sequenceNumber=" + sequenceNumber +
+                '}';
+    }
 }

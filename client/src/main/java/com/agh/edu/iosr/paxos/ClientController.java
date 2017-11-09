@@ -5,9 +5,7 @@ import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,14 +24,17 @@ public class ClientController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
     private static final String NO_RESPONSE_FROM_REPLICAS = "All the replicas did not respond.";
 
+    private final String port;
     private final ImmutableList<String> replicasAddresses;
     private final int halfReplicasCount;
     private final AsyncRestTemplate asyncCaller;
     private final RestTemplate syncCaller;
 
-    public ClientController(@Value("#{'${replicas}'.split(',')}") List<String> replicasAddresses,
+    public ClientController(@Value("#{'${server.port}'}") String port,
+                            @Value("#{'${replicas}'.split(',')}") List<String> replicasAddresses,
                             AsyncRestTemplate asyncCaller,
                             RestTemplate syncCaller) {
+        this.port = port;
         this.replicasAddresses = ImmutableList.copyOf(new LinkedHashSet<>(replicasAddresses));
         this.halfReplicasCount = this.replicasAddresses.size() / 2;
         this.asyncCaller = asyncCaller;
@@ -74,20 +75,25 @@ public class ClientController {
 
     @RequestMapping(value = "/write/{value}", method = RequestMethod.POST)
     public ResponseEntity<String> write(@PathVariable String value) {
+        HttpEntity<String> request = blankRequest();
+
         for (String address : replicasAddresses) {
             try {
-                syncCaller.exchange(address + "/write/" + value, HttpMethod.POST, null, String.class);
+                syncCaller.exchange(address + "/write/" + value, HttpMethod.POST, request, String.class);
                 return ResponseEntity.ok("Successfully requested a write of value: " + value + ".");
             } catch (RestClientException e) {
                 LOGGER.info("Write call to " + address + " failed.");
             }
         }
+
         return errorResponse(NO_RESPONSE_FROM_REPLICAS);
     }
 
     private Iterator<Future<ResponseEntity<String>>> doAsyncReadCallsToReplicas() {
+        HttpEntity<String> request = blankRequest();
+
         List<Future<ResponseEntity<String>>> calls = replicasAddresses.stream()
-                .map(address -> asyncCaller.exchange(address + "/read", HttpMethod.GET, null, String.class))
+                .map(address -> asyncCaller.exchange(address + "/read", HttpMethod.GET, request, String.class))
                 .collect(Collectors.toList());
 
         return Iterables.cycle(calls).iterator();
@@ -95,6 +101,13 @@ public class ClientController {
 
     private Optional<Map.Entry<String, Integer>> getHighestResponseCount(Map<String, Integer> responseCounts) {
         return responseCounts.entrySet().stream().sorted((c1, c2) -> c2.getValue().compareTo(c1.getValue())).findFirst();
+    }
+
+    private HttpEntity<String> blankRequest() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("port", port);
+
+        return new HttpEntity<>(headers);
     }
 
     private static ResponseEntity<String> errorResponse(String response) {

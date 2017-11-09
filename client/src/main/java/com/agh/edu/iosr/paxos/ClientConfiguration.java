@@ -10,6 +10,7 @@ import org.springframework.http.client.HttpComponentsAsyncClientHttpRequestFacto
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 @Configuration
 public class ClientConfiguration {
@@ -20,6 +21,7 @@ public class ClientConfiguration {
     public AsyncRestTemplate getAsyncRestTemplate() {
         HttpComponentsAsyncClientHttpRequestFactory asyncRequestFactory = new HttpComponentsAsyncClientHttpRequestFactory();
         asyncRequestFactory.setHttpAsyncClient(asyncHttpClient());
+
         return new AsyncRestTemplate(asyncRequestFactory);
     }
 
@@ -37,5 +39,15 @@ public class ClientConfiguration {
         httpRequestFactory.setReadTimeout(replicaCallTimeout);
 
         return new RestTemplate(httpRequestFactory);
+    }
+
+    @Bean
+    public CommonsRequestLoggingFilter logFilter() {
+        CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();
+        filter.setIncludeQueryString(true);
+        filter.setIncludePayload(true);
+        filter.setIncludeClientInfo(true);
+
+        return filter;
     }
 }

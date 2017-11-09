@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Service
 public class Server {
 
-    private final int port;
+    private final String port;
     private final List<String> replicasAddresses;
     private final int halfReplicasCount;
     private final AtomicReference<String> value;
@@ -21,7 +21,7 @@ public class Server {
 
     @Autowired
     public Server(@Value("#{'${server.port}'}") String port, @Value("#{'${server.replicas}'.split(',')}") List<String> replicasAddresses) {
-        this.port = Integer.parseInt(port);
+        this.port = port;
         this.replicasAddresses = ImmutableList.copyOf(new LinkedHashSet<>(replicasAddresses));
         this.halfReplicasCount = this.replicasAddresses.size() / 2;
         this.value = new AtomicReference<>("Initial value");
@@ -33,7 +33,7 @@ public class Server {
         this("-1", ImmutableList.of());
     }
 
-    public int getPort() {
+    public String getPort() {
         return port;
     }
 
