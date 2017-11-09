@@ -10,6 +10,7 @@ import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.AsyncRestTemplate;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Service
 public class ProposerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProposerService.class);
