@@ -39,6 +39,8 @@ public class ProposerService {
     public void propose(String value) {
         long sequenceNumber = server.incrementAndGetSequenceNumber();
 
+        LOGGER.info("Proposing value: '" + value + "' with sequence number: " + sequenceNumber);
+
         List<PrepareResponse> promises = prepare(sequenceNumber);
 
         if (promises.size() <= server.getHalfReplicasCount()) {
@@ -54,13 +56,13 @@ public class ProposerService {
         }
     }
 
-    private List<PrepareResponse> prepare(long sequenceNumber) {
+    List<PrepareResponse> prepare(long sequenceNumber) {
         PrepareRequest prepareRequest = new PrepareRequest(sequenceNumber);
 
         return getResponses("/prepare", prepareRequest, PrepareResponse.class, PrepareResponse::getAnswer);
     }
 
-    private String updateValueIfNecessary(String value, Stream<AcceptedProposal> acceptedProposals) {
+    String updateValueIfNecessary(String value, Stream<AcceptedProposal> acceptedProposals) {
         return acceptedProposals
                 .filter(Objects::nonNull)
                 .sorted((p1, p2) -> Long.compare(p2.getSequenceNumber(), p1.getSequenceNumber()))
@@ -69,7 +71,7 @@ public class ProposerService {
                 .orElse(value);
     }
 
-    private List<AcceptResponse> accept(long sequenceNumber, String value) {
+    List<AcceptResponse> accept(long sequenceNumber, String value) {
         AcceptRequest acceptRequest = new AcceptRequest(sequenceNumber, value);
 
         return getResponses("/accept", acceptRequest, AcceptResponse.class, rs -> true);

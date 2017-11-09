@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static com.agh.edu.iosr.paxos.controller.ControllerUtils.describeRequest;
+import static com.agh.edu.iosr.paxos.controller.ControllerUtils.describeResponse;
+
 
 @RestController
 public class AcceptorController {
@@ -28,22 +31,22 @@ public class AcceptorController {
 
     @PostMapping(value = "/prepare")
     public ResponseEntity<PrepareResponse> prepare(@RequestBody PrepareRequest prepareRequest, HttpServletRequest request) {
-        LOGGER.info(ControllerUtils.describeRequest(request, prepareRequest));
+        LOGGER.info(describeRequest(request, prepareRequest));
 
         ResponseEntity<PrepareResponse> response = ResponseEntity.ok(acceptorService.prepare(prepareRequest));
 
-        LOGGER.info(ControllerUtils.describeResponse(request, prepareRequest, response));
+        LOGGER.info(describeResponse(request, prepareRequest, response));
 
         return response;
     }
 
     @PostMapping(value = "/accept")
     public ResponseEntity<AcceptResponse> accept(@RequestBody AcceptRequest acceptRequest, HttpServletRequest request) {
-        LOGGER.info(ControllerUtils.describeRequest(request, acceptRequest));
+        LOGGER.info(describeRequest(request, acceptRequest));
 
         ResponseEntity<AcceptResponse> response = ResponseEntity.ok(acceptorService.accept(acceptRequest));
 
-        LOGGER.info(ControllerUtils.describeResponse(request, acceptRequest, response));
+        LOGGER.info(describeResponse(request, acceptRequest, response));
 
         return response;
     }

@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static com.agh.edu.iosr.paxos.controller.ControllerUtils.describeRequest;
+import static com.agh.edu.iosr.paxos.controller.ControllerUtils.describeResponse;
+
 @RestController
 public class ServerController {
 
@@ -27,24 +30,24 @@ public class ServerController {
 
     @GetMapping(value = "/read")
     public ResponseEntity<String> read(HttpServletRequest request) {
-        LOGGER.info(ControllerUtils.describeRequest(request));
+        LOGGER.info(describeRequest(request));
 
         ResponseEntity<String> response = ResponseEntity.ok(server.getValue().get());
 
-        LOGGER.info(ControllerUtils.describeResponse(request, response));
+        LOGGER.info(describeResponse(request, response));
 
         return response;
     }
 
     @PostMapping(value = "/write/{value}")
     public ResponseEntity<String> write(@PathVariable String value, HttpServletRequest request) {
-        LOGGER.info(ControllerUtils.describeRequest(request));
+        LOGGER.info(describeRequest(request));
 
         proposerService.propose(value);
 
         ResponseEntity<String> response = ResponseEntity.ok("OK");
 
-        LOGGER.info(ControllerUtils.describeResponse(request, response));
+        LOGGER.info(describeResponse(request, response));
 
         return response;
     }

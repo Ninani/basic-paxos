@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static com.agh.edu.iosr.paxos.controller.ControllerUtils.describeRequest;
+import static com.agh.edu.iosr.paxos.controller.ControllerUtils.describeResponse;
+
 @Controller
 public class LearnerController {
 
@@ -24,13 +27,13 @@ public class LearnerController {
 
     @PostMapping(value = "/learn")
     public void learn(@RequestBody AcceptedProposal acceptedProposal, HttpServletRequest request) {
-        LOGGER.info(ControllerUtils.describeRequest(request, acceptedProposal));
+        LOGGER.info(describeRequest(request, acceptedProposal));
 
         learnerService.learn(acceptedProposal);
 
         ResponseEntity<String> response = ResponseEntity.ok("OK");
 
-        LOGGER.info(ControllerUtils.describeResponse(request, acceptedProposal, response));
+        LOGGER.info(describeResponse(request, acceptedProposal, response));
 
     }
 }
