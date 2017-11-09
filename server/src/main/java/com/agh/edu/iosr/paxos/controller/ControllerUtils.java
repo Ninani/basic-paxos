@@ -13,6 +13,10 @@ class ControllerUtils {
         return describeRequest(request) + " [" + requestBody + "]";
     }
 
+    static String describeResponse(HttpServletRequest request, ResponseEntity<?> response) {
+        return "RS to " + describeRequest(request) + ": " + response;
+    }
+
     static String describeResponse(HttpServletRequest request, Object requestBody, ResponseEntity<?> response) {
         return "RS to " + describeRequest(request, requestBody) + ": " + response;
     }

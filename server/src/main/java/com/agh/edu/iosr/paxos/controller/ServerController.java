@@ -31,7 +31,7 @@ public class ServerController {
 
         ResponseEntity<String> response = ResponseEntity.ok(server.getValue().get());
 
-        LOGGER.info(ControllerUtils.describeResponse(request, "", response));
+        LOGGER.info(ControllerUtils.describeResponse(request, response));
 
         return response;
     }
@@ -44,7 +44,7 @@ public class ServerController {
 
         ResponseEntity<String> response = ResponseEntity.ok("OK");
 
-        LOGGER.info(ControllerUtils.describeResponse(request, "", response));
+        LOGGER.info(ControllerUtils.describeResponse(request, response));
 
         return response;
     }
