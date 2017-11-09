@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 public class ProposerServiceTest {
@@ -38,11 +39,36 @@ public class ProposerServiceTest {
     }
 
     @Test
-    public void test() throws Exception {
-        server.setSequenceNumber(0);
-        doReturn(ImmutableList.of(new PrepareResponse(true), new PrepareResponse(true))).when(proposerService).prepare(anyLong());
-        doReturn(ImmutableList.of(new AcceptResponse(1), new AcceptResponse(1))).when(proposerService).accept(anyLong(), anyString());
+    public void test_simple() throws Exception {
+        server.setSequenceNumber(0); // will send 1
+
+        PrepareResponse promise = new PrepareResponse(true);
+        doReturn(ImmutableList.of(promise, promise)).when(proposerService).prepare(anyLong());
+
+        AcceptResponse acceptResponse = new AcceptResponse(1);
+        doReturn(ImmutableList.of(acceptResponse, acceptResponse)).when(proposerService).accept(anyLong(), anyString());
+
         proposerService.propose("test");
+
         verify(proposerService, times(1)).propose(anyString());
+    }
+
+    @Test
+    public void test_sendProposeWithLowerNumberThanMajorityOfNodesPromised() throws Exception {
+        server.setSequenceNumber(0); // will send 1
+
+        PrepareResponse prepareResponse = new PrepareResponse(false, new AcceptedProposal(2, "value"));
+
+        doReturn(ImmutableList.of(prepareResponse, prepareResponse)).when(proposerService).prepare(anyLong());
+        doCallRealMethod().doThrow(new RuntimeException()).when(proposerService).propose(anyString()); // breaking the loop on 2nd pass
+
+        try {
+            proposerService.propose("someOtherValue");
+        } catch (RuntimeException e) {
+            verify(proposerService, times(2)).propose(anyString());
+            return;
+        }
+
+        fail();
     }
 }
