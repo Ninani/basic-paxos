@@ -9,23 +9,24 @@ import org.springframework.stereotype.Service;
 public class LearnerService {
 
     private final Server server;
-    private final AtomicLongMap<AcceptedProposal> acceptedProposalOccurrences;
+    private final AtomicLongMap<String> acceptedValueOccurrences;
     private final AcceptorService acceptorService;
 
     public LearnerService(Server server, AcceptorService acceptorService) {
         this.server = server;
-        this.acceptedProposalOccurrences = AtomicLongMap.create();
+        this.acceptedValueOccurrences = AtomicLongMap.create();
         this.acceptorService = acceptorService;
     }
 
     public void learn(AcceptedProposal acceptedProposal) {
-        long occurrencesCount = acceptedProposalOccurrences.incrementAndGet(acceptedProposal);
+        String value = acceptedProposal.getValue();
+        long occurrencesCount = acceptedValueOccurrences.incrementAndGet(value);
 
         if (occurrencesCount == server.getHalfReplicasCount() + 1) {
-            server.setValue(acceptedProposal.getValue());
+            server.setValue(value);
             acceptorService.clearAcceptedProposalOnCommitWithHigherOrEqualNumber(acceptedProposal.getSequenceNumber());
         } else if (occurrencesCount == server.getReplicasCount()) {
-            acceptedProposalOccurrences.getAndAdd(acceptedProposal, -server.getReplicasCount());
+            acceptedValueOccurrences.getAndAdd(value, -server.getReplicasCount());
         }
     }
 }

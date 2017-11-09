@@ -39,7 +39,7 @@ public class ProposerServiceTest {
 
     @Test
     public void test() throws Exception {
-        server.setSequenceNumber(1);
+        server.setSequenceNumber(0);
         doReturn(ImmutableList.of(new PrepareResponse(true), new PrepareResponse(true))).when(proposerService).prepare(anyLong());
         doReturn(ImmutableList.of(new AcceptResponse(1), new AcceptResponse(1))).when(proposerService).accept(anyLong(), anyString());
         proposerService.propose("test");
