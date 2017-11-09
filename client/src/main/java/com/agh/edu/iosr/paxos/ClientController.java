@@ -75,7 +75,8 @@ public class ClientController {
     public ResponseEntity<String> write(@PathVariable String value) {
         for (String address : replicasAddresses) {
             try {
-                return syncCaller.exchange(address + "/write/" + value, HttpMethod.POST, null, String.class);
+                syncCaller.exchange(address + "/write/" + value, HttpMethod.POST, null, String.class);
+                return ResponseEntity.ok("Successfully requested a write of value: " + value + ".");
             } catch (RestClientException e) {
                 LOGGER.info("Write call to " + address + " failed.");
             }
