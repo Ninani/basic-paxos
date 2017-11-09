@@ -41,6 +41,10 @@ public class Server {
         return replicasAddresses;
     }
 
+    public int getReplicasCount() {
+        return replicasAddresses.size();
+    }
+
     public int getHalfReplicasCount() {
         return halfReplicasCount;
     }
