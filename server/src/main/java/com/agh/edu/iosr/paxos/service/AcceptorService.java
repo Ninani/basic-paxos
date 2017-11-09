@@ -6,6 +6,7 @@ import com.agh.edu.iosr.paxos.messages.accept.AcceptResponse;
 import com.agh.edu.iosr.paxos.messages.prepare.AcceptedProposal;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareRequest;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.AsyncRestTemplate;
@@ -21,6 +22,7 @@ public class AcceptorService {
     private final AtomicLong minimumProposalNumber;
     private final AtomicReference<AcceptedProposal> acceptedProposal;
 
+    @Autowired
     public AcceptorService(Server server, AsyncRestTemplate asyncCaller) {
         this.server = server;
         this.asyncCaller = asyncCaller;
@@ -28,7 +30,7 @@ public class AcceptorService {
         this.acceptedProposal = new AtomicReference<>();
     }
 
-    //    added for testing purposes
+    // for testing
     public AcceptorService(Server server, AsyncRestTemplate asyncCaller, long minimumProposalNumber, AcceptedProposal acceptedProposal) {
         this.server = server;
         this.asyncCaller = asyncCaller;

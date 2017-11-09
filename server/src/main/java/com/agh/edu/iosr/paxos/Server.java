@@ -1,6 +1,7 @@
 package com.agh.edu.iosr.paxos;
 
 import com.google.common.collect.ImmutableList;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,18 +19,18 @@ public class Server {
     private final AtomicReference<String> value;
     private final AtomicLong sequenceNumber;
 
+    @Autowired
     public Server(@Value("#{'${server.port}'}") String port, @Value("#{'${server.replicas}'.split(',')}") List<String> replicasAddresses) {
         this.port = Integer.parseInt(port);
-
-        if (replicasAddresses.size() == 1 && replicasAddresses.get(0).equals("")) {
-            this.replicasAddresses = ImmutableList.of(); // for tests
-        } else {
-            this.replicasAddresses = ImmutableList.copyOf(new LinkedHashSet<>(replicasAddresses));
-        }
-
+        this.replicasAddresses = ImmutableList.copyOf(new LinkedHashSet<>(replicasAddresses));
         this.halfReplicasCount = this.replicasAddresses.size() / 2;
         this.value = new AtomicReference<>("Initial value");
         this.sequenceNumber = new AtomicLong(0);
+    }
+
+    // for testing
+    public Server() {
+        this("-1", ImmutableList.of());
     }
 
     public int getPort() {

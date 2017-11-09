@@ -7,7 +7,6 @@ import com.agh.edu.iosr.paxos.messages.prepare.AcceptedProposal;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareRequest;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareResponse;
 import com.agh.edu.iosr.paxos.service.AcceptorService;
-import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +22,7 @@ public class AcceptorServiceTest {
 
     @Before
     public void setUp() {
-        serverMock = new Server("-1", ImmutableList.of(""));
+        serverMock = new Server();
         acceptorServiceSeqZero = new AcceptorService(serverMock, null, 0, new AcceptedProposal(0, "val"));
         acceptorServiceSeqOne = new AcceptorService(serverMock, null, 1, new AcceptedProposal(1, "val"));
         prepareRequestSeqZero = new PrepareRequest(0);
