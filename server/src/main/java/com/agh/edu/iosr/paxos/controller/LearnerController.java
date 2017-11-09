@@ -1,20 +1,20 @@
 package com.agh.edu.iosr.paxos.controller;
 
-import com.agh.edu.iosr.paxos.Server;
+import com.agh.edu.iosr.paxos.service.LearnerService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 public class LearnerController {
 
-    private final Server server;
+    private final LearnerService learnerService;
 
-    public LearnerController(Server server) {
-        this.server = server;
+    public LearnerController(LearnerService learnerService) {
+        this.learnerService = learnerService;
     }
 
     @RequestMapping(value = "/learn/{value}", method = RequestMethod.POST)
     public void learn(@PathVariable String value) {
-        server.setValue(value);
+        learnerService.learn(value);
     }
 }
