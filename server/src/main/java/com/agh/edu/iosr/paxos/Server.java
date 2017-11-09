@@ -20,7 +20,13 @@ public class Server {
 
     public Server(@Value("#{'${server.port}'}") String port, @Value("#{'${server.replicas}'.split(',')}") List<String> replicasAddresses) {
         this.port = Integer.parseInt(port);
-        this.replicasAddresses = ImmutableList.copyOf(new LinkedHashSet<>(replicasAddresses));
+
+        if (replicasAddresses.size() == 1 && replicasAddresses.get(0).equals("")) {
+            this.replicasAddresses = ImmutableList.of(); // for tests
+        } else {
+            this.replicasAddresses = ImmutableList.copyOf(new LinkedHashSet<>(replicasAddresses));
+        }
+
         this.halfReplicasCount = this.replicasAddresses.size() / 2;
         this.value = new AtomicReference<>("Initial value");
         this.sequenceNumber = new AtomicLong(0);
