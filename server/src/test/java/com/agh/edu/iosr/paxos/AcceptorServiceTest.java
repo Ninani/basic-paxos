@@ -7,6 +7,7 @@ import com.agh.edu.iosr.paxos.messages.prepare.AcceptedProposal;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareRequest;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareResponse;
 import com.agh.edu.iosr.paxos.service.AcceptorService;
+import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,15 +15,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class AcceptorServiceTest {
+    Server serverMock;
     AcceptorService acceptorServiceSeqZero;
     AcceptorService acceptorServiceSeqOne;
     PrepareRequest prepareRequestSeqZero;
     PrepareRequest prepareRequestSeqHigh;
-    
+
     @Before
     public void setUp() {
-        acceptorServiceSeqZero = new AcceptorService(0, new AcceptedProposal(0, "val"));
-        acceptorServiceSeqOne = new AcceptorService(1, new AcceptedProposal(1, "val"));
+        serverMock = new Server("-1", ImmutableList.of(""));
+        acceptorServiceSeqZero = new AcceptorService(serverMock, null, 0, new AcceptedProposal(0, "val"));
+        acceptorServiceSeqOne = new AcceptorService(serverMock, null, 1, new AcceptedProposal(1, "val"));
         prepareRequestSeqZero = new PrepareRequest(0);
         prepareRequestSeqHigh = new PrepareRequest(1000);
     }
@@ -85,7 +88,7 @@ public class AcceptorServiceTest {
     public void returnsPrevoiuslyAcceptedNumberAndValueForNextPrepareRequest() {
         long seqNumber = 6;
         String value = "val";
-        AcceptorService acceptorService = new AcceptorService(seqNumber, new AcceptedProposal());
+        AcceptorService acceptorService = new AcceptorService(serverMock, null, seqNumber, new AcceptedProposal());
         AcceptResponse acceptResponse = acceptorService.accept(new AcceptRequest(seqNumber, value));
         // TODO: 11/9/17 check if request has been accepted
         PrepareResponse prepareResponse = acceptorService.prepare(new PrepareRequest(8));
