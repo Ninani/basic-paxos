@@ -7,7 +7,10 @@ import com.agh.edu.iosr.paxos.messages.prepare.AcceptedProposal;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareRequest;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.AsyncRestTemplate;
 
@@ -53,16 +56,25 @@ public class AcceptorService {
         long minimumNumber = minimumProposalNumber.updateAndGet(n -> acceptNumber >= n ? acceptNumber : n);
 
         if (minimumNumber == acceptNumber) {
-            String acceptValue = acceptRequest.getValue();
+            AcceptedProposal proposal = new AcceptedProposal(acceptNumber, acceptRequest.getValue());
 
-            acceptedProposal.set(new AcceptedProposal(acceptNumber, acceptValue));
-            notifyLearners(acceptValue);
+            acceptedProposal.set(proposal);
+            notifyLearners(proposal);
         }
 
         return new AcceptResponse(minimumNumber);
     }
 
-    private void notifyLearners(String value) {
-        server.getReplicasAddresses().forEach(address -> asyncCaller.exchange(address + "/learn/" + value, HttpMethod.POST, null, String.class));
+    public void clearAcceptedProposalOnCommitWithHigherOrEqualNumber(long commitNumber) {
+        if (commitNumber >= minimumProposalNumber.get()) {
+            acceptedProposal.set(null);
+        }
+    }
+
+    private void notifyLearners(AcceptedProposal acceptedProposal) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<AcceptedProposal> request = new HttpEntity<>(acceptedProposal, headers);
+        server.getReplicasAddresses().forEach(address -> asyncCaller.exchange(address + "/learn/", HttpMethod.POST, request, String.class));
     }
 }
