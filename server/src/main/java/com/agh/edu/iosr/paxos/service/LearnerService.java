@@ -19,12 +19,10 @@ public class LearnerService {
     }
 
     public void learn(AcceptedProposal acceptedProposal) {
-        String value = acceptedProposal.getValue();
-
         long occurrencesCount = acceptedProposalOccurrences.incrementAndGet(acceptedProposal);
 
         if (occurrencesCount == server.getHalfReplicasCount() + 1) {
-            server.setValue(value);
+            server.setValue(acceptedProposal.getValue());
             acceptorService.clearAcceptedProposalOnCommitWithHigherOrEqualNumber(acceptedProposal.getSequenceNumber());
         } else if (occurrencesCount == server.getReplicasCount()) {
             acceptedProposalOccurrences.getAndAdd(acceptedProposal, -server.getReplicasCount());
