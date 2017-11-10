@@ -103,7 +103,11 @@ public class LearnerServiceTest {
     }
 
     @Test
-    public void subtractForEqualOccurencesAndReplicasCount() {
-
+    public void subtractOccurrencesCounterIfAllServersResponded() {
+        learnerService.learn(new AcceptedProposal(100, "value"));
+        learnerService.learn(new AcceptedProposal(100, "value"));
+        assertThat(learnerService.getAcceptedValueOccurrences().get("value")).isEqualTo(2);
+        learnerService.learn(new AcceptedProposal(100, "value"));
+        assertThat(learnerService.getAcceptedValueOccurrences().get("value")).isEqualTo(0);
     }
 }

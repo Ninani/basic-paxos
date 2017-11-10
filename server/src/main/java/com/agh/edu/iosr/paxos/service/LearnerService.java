@@ -18,6 +18,11 @@ public class LearnerService {
         this.acceptorService = acceptorService;
     }
 
+//    for testing purposes
+    public AtomicLongMap<String> getAcceptedValueOccurrences() {
+        return acceptedValueOccurrences;
+    }
+
     public void learn(AcceptedProposal acceptedProposal) {
         String value = acceptedProposal.getValue();
         long occurrencesCount = acceptedValueOccurrences.incrementAndGet(value);
