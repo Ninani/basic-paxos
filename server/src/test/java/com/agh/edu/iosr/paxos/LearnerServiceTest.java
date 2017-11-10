@@ -20,7 +20,6 @@ public class LearnerServiceTest {
     AcceptorService acceptorService;
     LearnerService learnerService;
     List<String> replicaAddressList;
-    AcceptedProposal acceptedProposal100;
 
     @Before
     public void setUp() {
@@ -30,17 +29,16 @@ public class LearnerServiceTest {
         replicaAddressList.add("address3");
 
         server = new Server("1234", replicaAddressList);
-        acceptorService = new AcceptorService(server, new AsyncRestTemplate(), 0, new AcceptedProposal(1, "val"));
+        acceptorService = new AcceptorService(server, new AsyncRestTemplate(), 1, new AcceptedProposal(1, "val"));
         learnerService = new LearnerService(server, acceptorService);
-        acceptedProposal100 = new AcceptedProposal(100, "value");
     }
 
     @Test
     public void saveValueOnlyIfQuorum() {
         assertThat(server.getValue().get()).isEqualToIgnoringCase("Initial value");
-        learnerService.learn(acceptedProposal100);
+        learnerService.learn(new AcceptedProposal(100, "value"));
         assertThat(server.getValue().get()).isEqualToIgnoringCase("Initial value");
-        learnerService.learn(acceptedProposal100);
+        learnerService.learn(new AcceptedProposal(100, "value"));
         assertThat(server.getValue().get()).isEqualToIgnoringCase("value");
     }
 
@@ -52,27 +50,27 @@ public class LearnerServiceTest {
         assertThat(server.getValue().get()).isEqualToIgnoringCase("Initial value");
     }
 
-    @Test
-    public void dontSaveIfQuorumButDifferentSeqNumbers() {
-        assertThat(server.getValue().get()).isEqualToIgnoringCase("Initial value");
-        learnerService.learn(new AcceptedProposal(70, "value"));
-        learnerService.learn(new AcceptedProposal(90, "value"));
-        assertThat(server.getValue().get()).isEqualToIgnoringCase("Initial value");
-    }
+//    @Test
+//    public void dontSaveIfQuorumButDifferentSeqNumbers() {
+//        assertThat(server.getValue().get()).isEqualToIgnoringCase("Initial value");
+//        learnerService.learn(new AcceptedProposal(70, "value"));
+//        learnerService.learn(new AcceptedProposal(90, "value"));
+//        assertThat(server.getValue().get()).isEqualToIgnoringCase("Initial value");
+//    }
 
     @Test
     public void worksForEvenNumberOfNodes() {
 //        test for 4 nodes
         replicaAddressList.add("address4");
         Server evenNodeServer = new Server("1234", replicaAddressList);
-        acceptorService = new AcceptorService(evenNodeServer, new AsyncRestTemplate(), 0, new AcceptedProposal(1, "val"));
+        acceptorService = new AcceptorService(evenNodeServer, new AsyncRestTemplate(), 1, new AcceptedProposal(1, "val"));
         learnerService = new LearnerService(evenNodeServer, acceptorService);
 
-        learnerService.learn(acceptedProposal100);
-        learnerService.learn(acceptedProposal100);
+        learnerService.learn(new AcceptedProposal(100, "value"));
+        learnerService.learn(new AcceptedProposal(100, "value"));
         assertThat(evenNodeServer.getValue().get()).isEqualToIgnoringCase("Initial value");
 
-        learnerService.learn(acceptedProposal100);
+        learnerService.learn(new AcceptedProposal(100, "value"));
         assertThat(evenNodeServer.getValue().get()).isEqualToIgnoringCase("value");
     }
 
@@ -83,14 +81,29 @@ public class LearnerServiceTest {
         replicaAddressList.add("address5");
 
         Server oddNodeServer = new Server("1234", replicaAddressList);
-        acceptorService = new AcceptorService(oddNodeServer, new AsyncRestTemplate(), 0, new AcceptedProposal(1, "val"));
+        acceptorService = new AcceptorService(oddNodeServer, new AsyncRestTemplate(), 1, new AcceptedProposal(1, "val"));
         learnerService = new LearnerService(oddNodeServer, acceptorService);
 
-        learnerService.learn(acceptedProposal100);
-        learnerService.learn(acceptedProposal100);
+        learnerService.learn(new AcceptedProposal(100, "value"));
+        learnerService.learn(new AcceptedProposal(100, "value"));
         assertThat(oddNodeServer.getValue().get()).isEqualToIgnoringCase("Initial value");
 
-        learnerService.learn(acceptedProposal100);
+        learnerService.learn(new AcceptedProposal(100, "value"));
         assertThat(oddNodeServer.getValue().get()).isEqualToIgnoringCase("value");
+    }
+
+    @Test
+    public void clearsAcceptedProposalInAcceptorService() {
+        assertThat(server.getValue().get()).isEqualToIgnoringCase("Initial value");
+        assertThat(acceptorService.getAcceptedProposal()).hasNoNullFieldsOrProperties();
+        learnerService.learn(new AcceptedProposal(90, "value"));
+        learnerService.learn(new AcceptedProposal(90, "value"));
+        assertThat(server.getValue().get()).isEqualToIgnoringCase("value");
+        assertThat(acceptorService.getAcceptedProposal()).isEqualTo(null);
+    }
+
+    @Test
+    public void subtractForEqualOccurencesAndReplicasCount() {
+
     }
 }
