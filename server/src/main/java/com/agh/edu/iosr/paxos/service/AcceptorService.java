@@ -41,6 +41,10 @@ public class AcceptorService {
         this.acceptedProposal = new AtomicReference<>(acceptedProposal);
     }
 
+    public AcceptedProposal getAcceptedProposal() {
+        return acceptedProposal.get();
+    }
+
     public PrepareResponse prepare(PrepareRequest prepareRequest) {
         long prepareNumber = prepareRequest.getSequenceNumber();
 
