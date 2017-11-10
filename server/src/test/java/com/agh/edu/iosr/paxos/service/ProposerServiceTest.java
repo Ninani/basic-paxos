@@ -18,12 +18,15 @@ import static org.mockito.Mockito.*;
 public class ProposerServiceTest {
     private Server server;
     private ProposerService proposerService;
+    private PrepareResponse promiseWithNullAcceptedProposal;
 
     @Before
     public void setUp() throws Exception {
         this.server = Mockito.spy(new Server());
+        this.server.setSequenceNumber(0); // will send 1
         when(server.getHalfReplicasCount()).thenReturn(1);
         this.proposerService = Mockito.spy(new ProposerService(server, null));
+        this.promiseWithNullAcceptedProposal = new PrepareResponse(true);
     }
 
     @Test
@@ -40,10 +43,7 @@ public class ProposerServiceTest {
 
     @Test
     public void test_simple() throws Exception {
-        server.setSequenceNumber(0); // will send 1
-
-        PrepareResponse promise = new PrepareResponse(true);
-        doReturn(ImmutableList.of(promise, promise)).when(proposerService).prepare(anyLong());
+        doReturn(ImmutableList.of(promiseWithNullAcceptedProposal, promiseWithNullAcceptedProposal)).when(proposerService).prepare(anyLong());
 
         AcceptResponse acceptResponse = new AcceptResponse(1);
         doReturn(ImmutableList.of(acceptResponse, acceptResponse)).when(proposerService).accept(anyLong(), anyString());
@@ -55,8 +55,6 @@ public class ProposerServiceTest {
 
     @Test
     public void test_noMajorityFromAcceptors_onPrepare() throws Exception {
-        server.setSequenceNumber(0);
-
         doReturn(ImmutableList.of(new PrepareResponse(true))).when(proposerService).prepare(anyLong());
         doCallRealMethod().doThrow(new RuntimeException()).when(proposerService).propose(anyString()); // breaking the loop on 2nd pass
 
@@ -87,13 +85,9 @@ public class ProposerServiceTest {
 
     @Test
     public void test_noMajorityFromAcceptors_onAccept() throws Exception {
-        server.setSequenceNumber(0); // will send 1
+        doReturn(ImmutableList.of(promiseWithNullAcceptedProposal, promiseWithNullAcceptedProposal)).when(proposerService).prepare(anyLong());
 
-        PrepareResponse promise = new PrepareResponse(true);
-        doReturn(ImmutableList.of(promise, promise)).when(proposerService).prepare(anyLong());
-
-        AcceptResponse acceptResponse = new AcceptResponse(1);
-        doReturn(ImmutableList.of(acceptResponse)).when(proposerService).accept(anyLong(), anyString());
+        doReturn(ImmutableList.of(new AcceptResponse(1))).when(proposerService).accept(anyLong(), anyString());
 
         doCallRealMethod().doThrow(new RuntimeException()).when(proposerService).propose(anyString()); // breaking the loop on 2nd pass
 
@@ -108,11 +102,8 @@ public class ProposerServiceTest {
     }
 
     @Test
-    public void test_majorityFromAcceptorsButOneAcceptorAcceptedAHigherNumberProposal() throws Exception {
-        server.setSequenceNumber(0); // will send 1
-
-        PrepareResponse promise = new PrepareResponse(true);
-        doReturn(ImmutableList.of(promise, promise)).when(proposerService).prepare(anyLong());
+    public void test_majorityOfAcceptResponsesButOneAcceptorAcceptedAHigherNumberProposal() throws Exception {
+        doReturn(ImmutableList.of(promiseWithNullAcceptedProposal, promiseWithNullAcceptedProposal)).when(proposerService).prepare(anyLong());
 
         doReturn(ImmutableList.of(new AcceptResponse(1), new AcceptResponse(2))).when(proposerService).accept(anyLong(), anyString());
 
