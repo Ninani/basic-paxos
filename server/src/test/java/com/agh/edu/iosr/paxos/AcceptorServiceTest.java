@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 
 public class AcceptorServiceTest {
@@ -35,6 +36,7 @@ public class AcceptorServiceTest {
     public void returnsFalseIfSeqNumIsLower() {
         PrepareResponse prepareResponse = acceptorServiceSeqOne.prepare(prepareRequestSeqZero);
         assertThat(prepareResponse.getAnswer()).isEqualTo(false);
+        assertThat(prepareResponse.getAcceptedProposal()).isNull();
     }
 
     @Test
@@ -47,6 +49,7 @@ public class AcceptorServiceTest {
     public void returnsFalseIfSeqNumIsEqual() {
         PrepareResponse prepareResponse = acceptorServiceSeqZero.prepare(prepareRequestSeqZero);
         assertThat(prepareResponse.getAnswer()).isEqualTo(false);
+        assertThat(prepareResponse.getAcceptedProposal()).isNull();
     }
 
     @Test
@@ -54,6 +57,7 @@ public class AcceptorServiceTest {
         PrepareResponse prepareResponse = acceptorServiceSeqZero.prepare(prepareRequestSeqHigh);
         assertThat(prepareResponse.getAnswer()).isEqualTo(true);
         assertThat(prepareResponse.getAcceptedProposal().getValue()).isEqualToIgnoringCase("val");
+        assertEquals(0, prepareResponse.getAcceptedProposal().getSequenceNumber());
     }
 
 //    Tests for ACCEPT phase
@@ -80,10 +84,17 @@ public class AcceptorServiceTest {
         assertThat(acceptResponse.getSequenceNumber()).isEqualTo(newSeqNumber);
     }
 
+    @Test
+    public void acceptRequestIfNumberILower() {
+        long newSeqNumber = 0;
+        AcceptResponse acceptResponse = acceptorServiceSeqOne.accept(new AcceptRequest(newSeqNumber, "val"));
+        assertThat(acceptResponse.getSequenceNumber()).isEqualTo(1);
+    }
+
 //    Tests for two phases
 
     @Test
-    public void returnsPrevoiuslyAcceptedNumberAndValueForNextPrepareRequest() {
+    public void returnsPreviouslyAcceptedNumberAndValueForNextPrepareRequest() {
         long seqNumber = 6;
         String value = "val";
         AcceptorService acceptorService = new AcceptorService(serverMock, null, seqNumber, new AcceptedProposal());
