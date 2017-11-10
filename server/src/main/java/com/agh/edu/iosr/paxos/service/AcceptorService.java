@@ -44,7 +44,7 @@ public class AcceptorService {
     public PrepareResponse prepare(PrepareRequest prepareRequest) {
         long prepareNumber = prepareRequest.getSequenceNumber();
 
-        if (minimumProposalNumber.updateAndGet(n -> prepareNumber > n ? prepareNumber : n) == prepareNumber) {
+        if (minimumProposalNumber.getAndUpdate(n -> prepareNumber > n ? prepareNumber : n) < prepareNumber) {
             return new PrepareResponse(true, acceptedProposal.get());
         }
 

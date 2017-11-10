@@ -43,12 +43,11 @@ public class AcceptorServiceTest {
         assertThat(prepareResponse.getAnswer()).isEqualTo(true);
     }
 
-//    why it returns true?
-//    @Test
-//    public void returnsFalseIfSeqNumIsEqual() {
-//        PrepareResponse prepareResponse = acceptorServiceSeqZero.prepare(prepareRequestSeqZero);
-//        assertThat(prepareResponse.getAnswer()).isEqualTo(false);
-//    }
+    @Test
+    public void returnsFalseIfSeqNumIsEqual() {
+        PrepareResponse prepareResponse = acceptorServiceSeqZero.prepare(prepareRequestSeqZero);
+        assertThat(prepareResponse.getAnswer()).isEqualTo(false);
+    }
 
     @Test
     public void returnsValueForAcceptedPrepareRequest() {
