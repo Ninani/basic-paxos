@@ -76,11 +76,17 @@ public class ProposerServiceTest {
 
         AcceptResponse acceptResponse = new AcceptResponse(4);
         doReturn(ImmutableList.of(acceptResponse, acceptResponse)).when(proposerService).accept(anyLong(), anyString());
+        doCallRealMethod().doThrow(new RuntimeException()).when(proposerService).propose(anyString()); // breaking the loop on 2nd pass
 
-        proposerService.propose("four");
+        try {
+            proposerService.propose("four");
+        } catch (RuntimeException e) {
+            verify(proposerService, times(1)).accept(4, "three");
+            verify(proposerService, times(2)).propose("four");
+            return;
+        }
 
-        verify(proposerService, times(1)).propose("four");
-        verify(proposerService, times(1)).accept(4, "three");
+        fail();
     }
 
     @Test

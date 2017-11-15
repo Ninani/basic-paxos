@@ -47,11 +47,15 @@ public class ProposerService {
             propose(value);
         }
 
-        value = updateValueIfNecessary(value, promises.stream().map(PrepareResponse::getAcceptedProposal));
+        String newValue = updateValueIfNecessary(value, promises.stream().map(PrepareResponse::getAcceptedProposal));
 
-        List<AcceptResponse> acceptResponses = accept(sequenceNumber, value);
+        List<AcceptResponse> acceptResponses = accept(sequenceNumber, newValue);
 
         if (acceptResponses.size() <= server.getHalfReplicasCount() || acceptResponses.stream().anyMatch(rs -> rs.getSequenceNumber() > sequenceNumber)) {
+            propose(newValue);
+        }
+
+        if (!newValue.equals(value)) {
             propose(value);
         }
     }

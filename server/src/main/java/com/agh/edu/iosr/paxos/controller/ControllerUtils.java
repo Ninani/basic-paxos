@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 class ControllerUtils {
     static String describeRequest(HttpServletRequest request) {
-        return "RQ " + request.getHeader("port") + " " + request.getServletPath();
+        return "RQ " + request.getServletPath() + " from " + request.getHeader("port");
     }
 
     static String describeRequest(HttpServletRequest request, Object requestBody) {
@@ -14,10 +14,10 @@ class ControllerUtils {
     }
 
     static String describeResponse(HttpServletRequest request, ResponseEntity<?> response) {
-        return "RS to " + describeRequest(request) + ": " + response;
+        return "RS to [" + describeRequest(request) + "]: " + response;
     }
 
     static String describeResponse(HttpServletRequest request, Object requestBody, ResponseEntity<?> response) {
-        return "RS to " + describeRequest(request, requestBody) + ": " + response;
+        return "RS to [" + describeRequest(request, requestBody) + "]: " + response;
     }
 }
