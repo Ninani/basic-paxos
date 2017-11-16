@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ServerApplication {
     public static void main(String[] args) {
+        System.setProperty("timestamp",String.valueOf(System.currentTimeMillis()));
         SpringApplication.run(ServerApplication.class, args);
     }
 }
