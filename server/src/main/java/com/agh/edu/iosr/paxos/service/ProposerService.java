@@ -13,13 +13,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.AsyncRestTemplate;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,31 +35,42 @@ public class ProposerService {
     public void propose(String value) {
         long sequenceNumber = server.incrementAndGetSequenceNumber();
 
-        LOGGER.info("Proposing value: '" + value + "' with sequence number: " + sequenceNumber);
+        LOGGER.info("Proposing value " + value + " with sequence number " + sequenceNumber);
 
-        List<PrepareResponse> promises = prepare(sequenceNumber);
+        Map<String, PrepareResponse> prepareResponses = prepare(sequenceNumber);
+
+        List<PrepareResponse> promises = prepareResponses.values().stream().filter(PrepareResponse::getAnswer).collect(Collectors.toList());
 
         if (promises.size() <= server.getHalfReplicasCount()) {
+            LOGGER.info("Got minority of promises - retrying value " + value);
             propose(value);
+            return;
         }
 
         String newValue = updateValueIfNecessary(value, promises.stream().map(PrepareResponse::getAcceptedProposal));
 
-        List<AcceptResponse> acceptResponses = accept(sequenceNumber, newValue);
+        Map<String, AcceptResponse> acceptResponses = accept(sequenceNumber, newValue);
 
-        if (acceptResponses.size() <= server.getHalfReplicasCount() || acceptResponses.stream().anyMatch(rs -> rs.getSequenceNumber() > sequenceNumber)) {
+        if (acceptResponses.size() <= server.getHalfReplicasCount()) {
+            LOGGER.info("Got minority of accept responses - retrying value " + newValue);
+            propose(newValue);
+        } else if (acceptResponses.values().stream().anyMatch(rs -> rs.getSequenceNumber() > sequenceNumber)) {
+            LOGGER.info("One accept response had a larger sequence number than " + sequenceNumber + " - retrying value " + newValue);
             propose(newValue);
         }
 
         if (!newValue.equals(value)) {
+            LOGGER.info("Value " + value + " had to be overriden with value " + newValue + " - retrying value " + value);
             propose(value);
         }
+
+        LOGGER.info("Done proposing value " + value);
     }
 
-    List<PrepareResponse> prepare(long sequenceNumber) {
+    Map<String, PrepareResponse> prepare(long sequenceNumber) {
         PrepareRequest prepareRequest = new PrepareRequest(sequenceNumber);
 
-        return getResponses("/prepare", prepareRequest, PrepareResponse.class, PrepareResponse::getAnswer);
+        return getResponses("prepare", prepareRequest, PrepareResponse.class);
     }
 
     String updateValueIfNecessary(String value, Stream<AcceptedProposal> acceptedProposals) {
@@ -75,15 +82,15 @@ public class ProposerService {
                 .orElse(value);
     }
 
-    List<AcceptResponse> accept(long sequenceNumber, String value) {
+    Map<String, AcceptResponse> accept(long sequenceNumber, String value) {
         AcceptRequest acceptRequest = new AcceptRequest(sequenceNumber, value);
 
-        return getResponses("/accept", acceptRequest, AcceptResponse.class, rs -> true);
+        return getResponses("accept", acceptRequest, AcceptResponse.class);
     }
 
-    private <RQ, RS> List<RS> getResponses(String endpoint, RQ request, Class<RS> responseType, Predicate<RS> responseCondition) {
+    private <RQ, RS> Map<String, RS> getResponses(String endpoint, RQ request, Class<RS> responseType) {
         Iterator<Future<ResponseEntity<RS>>> callsCyclingIterator = sendAsyncPostRequestsToReplicas(endpoint, request, responseType);
-        List<RS> responses = new ArrayList<>();
+        Map<String, RS> responses = new HashMap<>();
 
         while (responses.size() <= server.getHalfReplicasCount() && callsCyclingIterator.hasNext()) {
             Future<ResponseEntity<RS>> call = callsCyclingIterator.next();
@@ -96,11 +103,7 @@ public class ProposerService {
                     ResponseEntity<RS> response = call.get();
 
                     if (response.getStatusCode() == HttpStatus.OK) {
-                        RS responseBody = response.getBody();
-
-                        if (responseCondition.test(responseBody)) {
-                            responses.add(responseBody);
-                        }
+                        responses.put(response.getHeaders().get("port").get(0), response.getBody());
                     }
                 } catch (InterruptedException | ExecutionException e) {
                     LOGGER.error("{}", e.getMessage(), e);
@@ -108,6 +111,8 @@ public class ProposerService {
                 callsCyclingIterator.remove();
             }
         }
+
+        LOGGER.info("Got " + responses.size() + "/" + server.getReplicasCount() + " " + endpoint + " responses: " + responses);
 
         return responses;
     }
@@ -119,7 +124,7 @@ public class ProposerService {
         HttpEntity<RQ> request = new HttpEntity<>(requestBody, headers);
 
         List<Future<ResponseEntity<RS>>> calls = server.getReplicasAddresses().stream()
-                .map(address -> asyncCaller.exchange(address + endpoint, HttpMethod.POST, request, responseType))
+                .map(address -> asyncCaller.exchange(address + "/" + endpoint, HttpMethod.POST, request, responseType))
                 .collect(Collectors.toList());
 
         return Iterables.cycle(calls).iterator();

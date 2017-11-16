@@ -27,13 +27,13 @@ public class LearnerController {
 
     @PostMapping(value = "/learn")
     public void learn(@RequestBody AcceptedProposal acceptedProposal, HttpServletRequest request) {
-        LOGGER.info(describeRequest(request, acceptedProposal));
+        LOGGER.debug(describeRequest(request, acceptedProposal));
 
         learnerService.learn(acceptedProposal);
 
         ResponseEntity<String> response = ResponseEntity.ok("OK");
 
-        LOGGER.info(describeResponse(request, acceptedProposal, response));
+        LOGGER.debug(describeResponse(request, acceptedProposal, response));
 
     }
 }
