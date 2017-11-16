@@ -45,6 +45,7 @@ public class ProposerService {
 
         if (promises.size() <= server.getHalfReplicasCount()) {
             propose(value);
+            return;
         }
 
         String newValue = updateValueIfNecessary(value, promises.stream().map(PrepareResponse::getAcceptedProposal));
