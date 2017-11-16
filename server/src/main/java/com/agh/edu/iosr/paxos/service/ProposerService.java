@@ -64,7 +64,7 @@ public class ProposerService {
             propose(value);
         }
 
-        LOGGER.info("Done proposing value " + value);
+        LOGGER.info("Done proposing value " + newValue);
     }
 
     Map<String, PrepareResponse> prepare(long sequenceNumber) {
