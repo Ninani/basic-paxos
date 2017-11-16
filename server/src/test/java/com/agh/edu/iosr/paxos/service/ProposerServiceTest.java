@@ -4,7 +4,7 @@ import com.agh.edu.iosr.paxos.Server;
 import com.agh.edu.iosr.paxos.messages.accept.AcceptResponse;
 import com.agh.edu.iosr.paxos.messages.prepare.AcceptedProposal;
 import com.agh.edu.iosr.paxos.messages.prepare.PrepareResponse;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -43,10 +43,10 @@ public class ProposerServiceTest {
 
     @Test
     public void test_simple() throws Exception {
-        doReturn(ImmutableList.of(promiseWithNullAcceptedProposal, promiseWithNullAcceptedProposal)).when(proposerService).prepare(anyLong());
+        doReturn(ImmutableMap.of("8090", promiseWithNullAcceptedProposal, "8091", promiseWithNullAcceptedProposal)).when(proposerService).prepare(anyLong());
 
         AcceptResponse acceptResponse = new AcceptResponse(1);
-        doReturn(ImmutableList.of(acceptResponse, acceptResponse)).when(proposerService).accept(anyLong(), anyString());
+        doReturn(ImmutableMap.of("8090", acceptResponse, "8091", acceptResponse)).when(proposerService).accept(anyLong(), anyString());
 
         proposerService.propose("test");
 
@@ -55,7 +55,7 @@ public class ProposerServiceTest {
 
     @Test
     public void test_noMajorityFromAcceptors_onPrepare() throws Exception {
-        doReturn(ImmutableList.of(new PrepareResponse(true))).when(proposerService).prepare(anyLong());
+        doReturn(ImmutableMap.of("8090", new PrepareResponse(true))).when(proposerService).prepare(anyLong());
         doCallRealMethod().doThrow(new RuntimeException()).when(proposerService).propose(anyString()); // breaking the loop on 2nd pass
 
         try {
@@ -72,10 +72,10 @@ public class ProposerServiceTest {
     public void test_proposerHasToUpdateValueAndIsAcceptedByMajorityOnAccept() throws Exception {
         server.setSequenceNumber(3); // will send 4
 
-        doReturn(ImmutableList.of(new PrepareResponse(true, new AcceptedProposal(2, "two")), new PrepareResponse(true, new AcceptedProposal(3, "three")))).when(proposerService).prepare(anyLong());
+        doReturn(ImmutableMap.of("8090", new PrepareResponse(true, new AcceptedProposal(2, "two")), "8091", new PrepareResponse(true, new AcceptedProposal(3, "three")))).when(proposerService).prepare(anyLong());
 
         AcceptResponse acceptResponse = new AcceptResponse(4);
-        doReturn(ImmutableList.of(acceptResponse, acceptResponse)).when(proposerService).accept(anyLong(), anyString());
+        doReturn(ImmutableMap.of("8090", acceptResponse, "8091", acceptResponse)).when(proposerService).accept(anyLong(), anyString());
         doCallRealMethod().doThrow(new RuntimeException()).when(proposerService).propose(anyString()); // breaking the loop on 2nd pass
 
         try {
@@ -91,9 +91,9 @@ public class ProposerServiceTest {
 
     @Test
     public void test_noMajorityFromAcceptors_onAccept() throws Exception {
-        doReturn(ImmutableList.of(promiseWithNullAcceptedProposal, promiseWithNullAcceptedProposal)).when(proposerService).prepare(anyLong());
+        doReturn(ImmutableMap.of("8090", promiseWithNullAcceptedProposal, "8091", promiseWithNullAcceptedProposal)).when(proposerService).prepare(anyLong());
 
-        doReturn(ImmutableList.of(new AcceptResponse(1))).when(proposerService).accept(anyLong(), anyString());
+        doReturn(ImmutableMap.of("8090", new AcceptResponse(1))).when(proposerService).accept(anyLong(), anyString());
 
         doCallRealMethod().doThrow(new RuntimeException()).when(proposerService).propose(anyString()); // breaking the loop on 2nd pass
 
@@ -109,9 +109,9 @@ public class ProposerServiceTest {
 
     @Test
     public void test_majorityOfAcceptResponsesButOneAcceptorAcceptedAHigherNumberProposal() throws Exception {
-        doReturn(ImmutableList.of(promiseWithNullAcceptedProposal, promiseWithNullAcceptedProposal)).when(proposerService).prepare(anyLong());
+        doReturn(ImmutableMap.of("8090", promiseWithNullAcceptedProposal, "8091", promiseWithNullAcceptedProposal)).when(proposerService).prepare(anyLong());
 
-        doReturn(ImmutableList.of(new AcceptResponse(1), new AcceptResponse(2))).when(proposerService).accept(anyLong(), anyString());
+        doReturn(ImmutableMap.of("8090", new AcceptResponse(1), "8091", new AcceptResponse(2))).when(proposerService).accept(anyLong(), anyString());
 
         doCallRealMethod().doThrow(new RuntimeException()).when(proposerService).propose(anyString()); // breaking the loop on 2nd pass
 

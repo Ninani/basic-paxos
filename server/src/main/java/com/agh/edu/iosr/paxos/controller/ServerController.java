@@ -30,24 +30,24 @@ public class ServerController {
 
     @GetMapping(value = "/read")
     public ResponseEntity<String> read(HttpServletRequest request) {
-        LOGGER.info(describeRequest(request));
+        LOGGER.debug(describeRequest(request));
 
         ResponseEntity<String> response = ResponseEntity.ok(server.getValue().get());
 
-        LOGGER.info(describeResponse(request, response));
+        LOGGER.debug(describeResponse(request, response));
 
         return response;
     }
 
     @PostMapping(value = "/write/{value}")
     public ResponseEntity<String> write(@PathVariable String value, HttpServletRequest request) {
-        LOGGER.info(describeRequest(request));
+        LOGGER.debug(describeRequest(request));
 
         proposerService.propose(value);
 
         ResponseEntity<String> response = ResponseEntity.ok("OK");
 
-        LOGGER.info(describeResponse(request, response));
+        LOGGER.debug(describeResponse(request, response));
 
         return response;
     }
