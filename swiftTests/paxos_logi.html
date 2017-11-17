@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p><font color="blue">2017-11-16 20:51:30.406    8090  ServerController  : RQ /write/0 from null</font></p>
+<p><font color="green">2017-11-16 20:51:30.406    8091  ServerController  : RQ /write/1 from null</font></p>
+<p><font color="blue">2017-11-16 20:51:30.407    8090  ProposerService  : Proposing value 0 with sequence number 1</font></p>
+<p><font color="green">2017-11-16 20:51:30.407    8091  ProposerService  : Proposing value 1 with sequence number 1</font></p>
+<p><font color="blue">2017-11-16 20:51:30.590    8090  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=1}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.591    8090  AcceptorController  : RQ /prepare from 8091 [PrepareRequest{sequenceNumber=1}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.591    8091  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=1}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.591    8091  AcceptorController  : RQ /prepare from 8091 [PrepareRequest{sequenceNumber=1}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.599    8091  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=1}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8091]}></font></p>
+<p><font color="green">2017-11-16 20:51:30.599    8091  AcceptorController  : RS to [RQ /prepare from 8091 [PrepareRequest{sequenceNumber=1}]]: <200 OK,PrepareResponse{answer=false, acceptedProposal=null},{port=[8091]}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.603    8090  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=1}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8090]}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.603    8090  AcceptorController  : RS to [RQ /prepare from 8091 [PrepareRequest{sequenceNumber=1}]]: <200 OK,PrepareResponse{answer=false, acceptedProposal=null},{port=[8090]}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.631    8090  ProposerService  : Got 2/3 prepare responses: {8090=PrepareResponse{answer=true, acceptedProposal=null}, 8091=PrepareResponse{answer=true, acceptedProposal=null}}</font></p>
+<p><font color="green">2017-11-16 20:51:30.631    8091  ProposerService  : Got 2/3 prepare responses: {8090=PrepareResponse{answer=false, acceptedProposal=null}, 8091=PrepareResponse{answer=false, acceptedProposal=null}}</font></p>
+<p><font color="green">2017-11-16 20:51:30.634    8091  ProposerService  : Got minority of promises - retrying value 1</font></p>
+<p><font color="green">2017-11-16 20:51:30.634    8091  ProposerService  : Proposing value 1 with sequence number 2</font></p>
+<p><font color="blue">2017-11-16 20:51:30.638    8090  AcceptorController  : RQ /prepare from 8091 [PrepareRequest{sequenceNumber=2}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.638    8090  AcceptorController  : RS to [RQ /prepare from 8091 [PrepareRequest{sequenceNumber=2}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8090]}></font></p>
+<p><font color="green">2017-11-16 20:51:30.639    8091  AcceptorController  : RQ /prepare from 8091 [PrepareRequest{sequenceNumber=2}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.639    8091  AcceptorController  : RS to [RQ /prepare from 8091 [PrepareRequest{sequenceNumber=2}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8091]}></font></p>
+<p><font color="green">2017-11-16 20:51:30.642    8091  ProposerService  : Got 2/3 prepare responses: {8090=PrepareResponse{answer=true, acceptedProposal=null}, 8091=PrepareResponse{answer=true, acceptedProposal=null}}</font></p>
+<p><font color="blue">2017-11-16 20:51:30.648    8090  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=1, value='0'}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.648    8091  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=1, value='0'}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.649    8090  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=1, value='0'}]]: <200 OK,AcceptResponse{sequenceNumber=2},{port=[8090]}></font></p>
+<p><font color="green">2017-11-16 20:51:30.649    8091  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=1, value='0'}]]: <200 OK,AcceptResponse{sequenceNumber=2},{port=[8091]}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.654    8090  AcceptorController  : RQ /accept from 8091 [AcceptRequest{sequenceNumber=2, value='1'}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.654    8091  AcceptorController  : RQ /accept from 8091 [AcceptRequest{sequenceNumber=2, value='1'}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.655    8090  ProposerService  : Got 2/3 accept responses: {8090=AcceptResponse{sequenceNumber=2}, 8091=AcceptResponse{sequenceNumber=2}}</font></p>
+<p><font color="green">2017-11-16 20:51:30.659    8091  AcceptorController  : RS to [RQ /accept from 8091 [AcceptRequest{sequenceNumber=2, value='1'}]]: <200 OK,AcceptResponse{sequenceNumber=2},{port=[8091]}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.660    8090  AcceptorController  : RS to [RQ /accept from 8091 [AcceptRequest{sequenceNumber=2, value='1'}]]: <200 OK,AcceptResponse{sequenceNumber=2},{port=[8090]}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.661    8090  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=2, value='1'}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.661    8090  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=2, value='1'}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.663    8091  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=2, value='1'}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.663    8091  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=2, value='1'}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.665    8090  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=2, value='1'}]]: <200 OK,OK,{}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.665    8090  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=2, value='1'}]]: <200 OK,OK,{}></font></p>
+<p><font color="green">2017-11-16 20:51:30.665    8091  ProposerService  : Got 2/3 accept responses: {8090=AcceptResponse{sequenceNumber=2}, 8091=AcceptResponse{sequenceNumber=2}}</font></p>
+<p><font color="green">2017-11-16 20:51:30.666    8091  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=2, value='1'}]]: <200 OK,OK,{}></font></p>
+<p><font color="green">2017-11-16 20:51:30.666    8091  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=2, value='1'}]]: <200 OK,OK,{}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.669    8090  ProposerService  : One accept response had a larger sequence number than 1 - retrying value 0</font></p>
+<p><font color="blue">2017-11-16 20:51:30.670    8090  ProposerService  : Proposing value 0 with sequence number 2</font></p>
+<p><font color="blue">2017-11-16 20:51:30.677    8090  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=2}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.677    8090  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=2}]]: <200 OK,PrepareResponse{answer=false, acceptedProposal=null},{port=[8090]}></font></p>
+<p><font color="green">2017-11-16 20:51:30.677    8091  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=2}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.677    8091  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=2}]]: <200 OK,PrepareResponse{answer=false, acceptedProposal=null},{port=[8091]}></font></p>
+<p><font color="green">2017-11-16 20:51:30.679    8091  ProposerService  : Done proposing value 1</font></p>
+<p><font color="blue">2017-11-16 20:51:30.680    8090  ProposerService  : Got 2/3 prepare responses: {8090=PrepareResponse{answer=false, acceptedProposal=null}, 8091=PrepareResponse{answer=false, acceptedProposal=null}}</font></p>
+<p><font color="blue">2017-11-16 20:51:30.680    8090  ProposerService  : Got minority of promises - retrying value 0</font></p>
+<p><font color="blue">2017-11-16 20:51:30.680    8090  ProposerService  : Proposing value 0 with sequence number 3</font></p>
+<p><font color="green">2017-11-16 20:51:30.680    8091  ServerController  : RS to [RQ /write/1 from null]: <200 OK,OK,{}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.684    8090  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=3}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.684    8090  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=3}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8090]}></font></p>
+<p><font color="green">2017-11-16 20:51:30.688    8091  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=3}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.688    8091  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=3}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8091]}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.691    8090  ProposerService  : Got 2/3 prepare responses: {8090=PrepareResponse{answer=true, acceptedProposal=null}, 8091=PrepareResponse{answer=true, acceptedProposal=null}}</font></p>
+<p><font color="blue">2017-11-16 20:51:30.695    8090  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=3, value='0'}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.700    8090  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=3, value='0'}]]: <200 OK,AcceptResponse{sequenceNumber=3},{port=[8090]}></font></p>
+<p><font color="green">2017-11-16 20:51:30.701    8091  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=3, value='0'}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.702    8091  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}></font></p>
+<p><font color="green">2017-11-16 20:51:30.704    8091  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=3, value='0'}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.707    8090  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=3, value='0'}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.707    8090  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}></font></p>
+<p><font color="green">2017-11-16 20:51:30.707    8091  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=3, value='0'}]]: <200 OK,AcceptResponse{sequenceNumber=3},{port=[8091]}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.708    8090  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=3, value='0'}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.708    8090  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}></font></p>
+<p><font color="green">2017-11-16 20:51:30.708    8091  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=3, value='0'}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.708    8091  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.709    8090  ProposerService  : Got 2/3 accept responses: {8090=AcceptResponse{sequenceNumber=3}, 8091=AcceptResponse{sequenceNumber=3}}</font></p>
+<p><font color="blue">2017-11-16 20:51:30.710    8090  ProposerService  : Done proposing value 0</font></p>
+<p><font color="blue">2017-11-16 20:51:30.710    8090  ProposerService  : Done proposing value 0</font></p>
+<p><font color="blue">2017-11-16 20:51:30.710    8090  ServerController  : RS to [RQ /write/0 from null]: <200 OK,OK,{}></font></p>
+<p><font color="red">2017-11-16 20:51:30.734    8092  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=1, value='0'}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.734    8092  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=1}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.734    8092  AcceptorController  : RQ /prepare from 8091 [PrepareRequest{sequenceNumber=1}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.734    8092  AcceptorController  : RQ /prepare from 8091 [PrepareRequest{sequenceNumber=2}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.738    8092  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=1}]]: <200 OK,PrepareResponse{answer=false, acceptedProposal=null},{port=[8092]}></font></p>
+<p><font color="red">2017-11-16 20:51:30.738    8092  AcceptorController  : RS to [RQ /prepare from 8091 [PrepareRequest{sequenceNumber=1}]]: <200 OK,PrepareResponse{answer=false, acceptedProposal=null},{port=[8092]}></font></p>
+<p><font color="red">2017-11-16 20:51:30.738    8092  AcceptorController  : RS to [RQ /prepare from 8091 [PrepareRequest{sequenceNumber=2}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=AcceptedProposal{sequenceNumber=1, value='0'}},{port=[8092]}></font></p>
+<p><font color="red">2017-11-16 20:51:30.769    8092  AcceptorController  : RQ /accept from 8091 [AcceptRequest{sequenceNumber=2, value='1'}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.770    8092  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=2, value='1'}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.770    8092  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=2, value='1'}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.773    8092  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=2, value='1'}]]: <200 OK,OK,{}></font></p>
+<p><font color="red">2017-11-16 20:51:30.773    8092  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=2, value='1'}]]: <200 OK,OK,{}></font></p>
+<p><font color="red">2017-11-16 20:51:30.794    8092  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=1, value='0'}]]: <200 OK,AcceptResponse{sequenceNumber=1},{port=[8092]}></font></p>
+<p><font color="red">2017-11-16 20:51:30.795    8092  AcceptorController  : RS to [RQ /accept from 8091 [AcceptRequest{sequenceNumber=2, value='1'}]]: <200 OK,AcceptResponse{sequenceNumber=2},{port=[8092]}></font></p>
+<p><font color="red">2017-11-16 20:51:30.808    8092  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=2}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.809    8092  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=2}]]: <200 OK,PrepareResponse{answer=false, acceptedProposal=null},{port=[8092]}></font></p>
+<p><font color="red">2017-11-16 20:51:30.809    8092  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=3, value='0'}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.810    8092  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}></font></p>
+<p><font color="red">2017-11-16 20:51:30.814    8092  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=3}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.815    8092  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=3}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8092]}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.819    8090  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=2, value='1'}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.819    8091  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=1, value='0'}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.819    8091  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=2, value='1'}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.820    8090  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=1, value='0'}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.820    8092  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=2, value='1'}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.821    8090  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=1, value='0'}]]: <200 OK,OK,{}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.821    8090  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=2, value='1'}]]: <200 OK,OK,{}></font></p>
+<p><font color="green">2017-11-16 20:51:30.821    8091  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=2, value='1'}]]: <200 OK,OK,{}></font></p>
+<p><font color="green">2017-11-16 20:51:30.822    8091  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=1, value='0'}]]: <200 OK,OK,{}></font></p>
+<p><font color="red">2017-11-16 20:51:30.823    8092  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=2, value='1'}]]: <200 OK,OK,{}></font></p>
+<p><font color="red">2017-11-16 20:51:30.833    8092  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=1, value='0'}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.833    8092  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=1, value='0'}]]: <200 OK,OK,{}></font></p>
+<p><font color="red">2017-11-16 20:51:30.836    8092  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=3, value='0'}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.836    8092  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=3, value='0'}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.836    8092  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}></font></p>
+<p><font color="red">2017-11-16 20:51:30.840    8092  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=3, value='0'}]]: <200 OK,AcceptResponse{sequenceNumber=3},{port=[8092]}></font></p>
+<p><font color="blue">2017-11-16 20:51:30.844    8090  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=3, value='0'}]</font></p>
+<p><font color="blue">2017-11-16 20:51:30.844    8090  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}></font></p>
+<p><font color="green">2017-11-16 20:51:30.844    8091  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=3, value='0'}]</font></p>
+<p><font color="green">2017-11-16 20:51:30.844    8091  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}></font></p>
+<p><font color="red">2017-11-16 20:51:30.844    8092  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=3, value='0'}]</font></p>
+<p><font color="red">2017-11-16 20:51:30.844    8092  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}></font></p>
+<p><font color="green">2017-11-16 20:51:36.370    8091  ServerController  : RQ /read from 8080</font></p>
+<p><font color="green">2017-11-16 20:51:36.370    8091  ServerController  : RS to [RQ /read from 8080]: <200 OK,0,{}></font></p>
+<p><font color="blue">2017-11-16 20:51:36.371    8090  ServerController  : RQ /read from 8080</font></p>
+<p><font color="blue">2017-11-16 20:51:36.371    8090  ServerController  : RS to [RQ /read from 8080]: <200 OK,0,{}></font></p>
+<p><font color="red">2017-11-16 20:51:36.372    8092  ServerController  : RQ /read from 8080</font></p>
+<p><font color="red">2017-11-16 20:51:36.372    8092  ServerController  : RS to [RQ /read from 8080]: <200 OK,0,{}></font></p>
+</body>
+</html>
+

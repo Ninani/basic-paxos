@@ -1,0 +1,130 @@
+2017-11-16 20:57:33.923    8090  ServerController  : RQ /write/0 from null
+2017-11-16 20:57:33.923    8090  ServerController  : RQ /write/1 from null
+2017-11-16 20:57:33.924    8090  ProposerService  : Proposing value 0 with sequence number 2
+2017-11-16 20:57:33.924    8090  ProposerService  : Proposing value 1 with sequence number 1
+2017-11-16 20:57:34.042    8090  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=1}]
+2017-11-16 20:57:34.042    8090  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=2}]
+2017-11-16 20:57:34.046    8090  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=1}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8090]}>
+2017-11-16 20:57:34.046    8090  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=2}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8090]}>
+2017-11-16 20:57:34.145    8092  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=1}]
+2017-11-16 20:57:34.145    8092  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=2}]
+2017-11-16 20:57:34.149    8092  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=1}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8092]}>
+2017-11-16 20:57:34.150    8092  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=2}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8092]}>
+2017-11-16 20:57:34.152    8091  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=1}]
+2017-11-16 20:57:34.152    8091  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=2}]
+2017-11-16 20:57:34.156    8091  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=1}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8091]}>
+2017-11-16 20:57:34.156    8091  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=2}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8091]}>
+2017-11-16 20:57:34.174    8090  ProposerService  : Got 2/3 prepare responses: {8090=PrepareResponse{answer=true, acceptedProposal=null}, 8092=PrepareResponse{answer=true, acceptedProposal=null}}
+2017-11-16 20:57:34.174    8090  ProposerService  : Got 2/3 prepare responses: {8090=PrepareResponse{answer=true, acceptedProposal=null}, 8092=PrepareResponse{answer=true, acceptedProposal=null}}
+2017-11-16 20:57:34.187    8090  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=1, value='1'}]
+2017-11-16 20:57:34.187    8090  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=2, value='0'}]
+2017-11-16 20:57:34.188    8090  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=1, value='1'}]]: <200 OK,AcceptResponse{sequenceNumber=2},{port=[8090]}>
+2017-11-16 20:57:34.188    8091  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=1, value='1'}]
+2017-11-16 20:57:34.188    8091  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=2, value='0'}]
+2017-11-16 20:57:34.188    8091  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=1, value='1'}]]: <200 OK,AcceptResponse{sequenceNumber=2},{port=[8091]}>
+2017-11-16 20:57:34.189    8092  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=1, value='1'}]
+2017-11-16 20:57:34.189    8092  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=1, value='1'}]]: <200 OK,AcceptResponse{sequenceNumber=2},{port=[8092]}>
+2017-11-16 20:57:34.193    8092  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=2, value='0'}]
+2017-11-16 20:57:34.195    8090  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=2, value='0'}]]: <200 OK,AcceptResponse{sequenceNumber=2},{port=[8090]}>
+2017-11-16 20:57:34.195    8090  ProposerService  : Got 2/3 accept responses: {8091=AcceptResponse{sequenceNumber=2}, 8092=AcceptResponse{sequenceNumber=2}}
+2017-11-16 20:57:34.197    8091  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=2, value='0'}]
+2017-11-16 20:57:34.198    8092  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=2, value='0'}]
+2017-11-16 20:57:34.200    8090  ProposerService  : One accept response had a larger sequence number than 1 - retrying value 1
+2017-11-16 20:57:34.200    8091  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=2, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.201    8090  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=2, value='0'}]
+2017-11-16 20:57:34.201    8090  ProposerService  : Proposing value 1 with sequence number 3
+2017-11-16 20:57:34.201    8092  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=2, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.203    8090  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=2, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.205    8090  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=3}]
+2017-11-16 20:57:34.205    8090  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=3}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=AcceptedProposal{sequenceNumber=2, value='0'}},{port=[8090]}>
+2017-11-16 20:57:34.228    8091  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=3}]
+2017-11-16 20:57:34.229    8091  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=3}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=AcceptedProposal{sequenceNumber=2, value='0'}},{port=[8091]}>
+2017-11-16 20:57:34.230    8092  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=3}]
+2017-11-16 20:57:34.230    8092  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=3}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=AcceptedProposal{sequenceNumber=2, value='0'}},{port=[8092]}>
+2017-11-16 20:57:34.232    8090  ProposerService  : Got 2/3 prepare responses: {8090=PrepareResponse{answer=true, acceptedProposal=AcceptedProposal{sequenceNumber=2, value='0'}}, 8091=PrepareResponse{answer=true, acceptedProposal=AcceptedProposal{sequenceNumber=2, value='0'}}}
+2017-11-16 20:57:34.235    8090  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=3, value='0'}]
+2017-11-16 20:57:34.236    8090  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=3, value='0'}]]: <200 OK,AcceptResponse{sequenceNumber=3},{port=[8090]}>
+2017-11-16 20:57:34.236    8091  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=3, value='0'}]
+2017-11-16 20:57:34.237    8090  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=3, value='0'}]
+2017-11-16 20:57:34.237    8090  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.238    8092  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=3, value='0'}]
+2017-11-16 20:57:34.238    8092  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.244    8092  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=3, value='0'}]
+2017-11-16 20:57:34.244    8092  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=2, value='0'}]]: <200 OK,AcceptResponse{sequenceNumber=2},{port=[8092]}>
+2017-11-16 20:57:34.246    8090  ProposerService  : Done proposing value 0
+2017-11-16 20:57:34.246    8090  ProposerService  : Got 2/3 accept responses: {8090=AcceptResponse{sequenceNumber=2}, 8092=AcceptResponse{sequenceNumber=2}}
+2017-11-16 20:57:34.246    8090  ServerController  : RS to [RQ /write/0 from null]: <200 OK,OK,{}>
+2017-11-16 20:57:34.247    8091  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=2, value='0'}]]: <200 OK,AcceptResponse{sequenceNumber=2},{port=[8091]}>
+2017-11-16 20:57:34.247    8091  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=3, value='0'}]]: <200 OK,AcceptResponse{sequenceNumber=3},{port=[8091]}>
+2017-11-16 20:57:34.251    8090  ProposerService  : Got 2/3 accept responses: {8090=AcceptResponse{sequenceNumber=3}, 8091=AcceptResponse{sequenceNumber=3}}
+2017-11-16 20:57:34.251    8091  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=3, value='0'}]
+2017-11-16 20:57:34.251    8091  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.254    8090  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=3, value='0'}]
+2017-11-16 20:57:34.254    8091  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=2, value='0'}]
+2017-11-16 20:57:34.254    8091  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=3, value='0'}]
+2017-11-16 20:57:34.254    8091  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=2, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.254    8092  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=2, value='0'}]
+2017-11-16 20:57:34.254    8092  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=3, value='0'}]
+2017-11-16 20:57:34.255    8091  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.255    8092  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=2, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.255    8092  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.256    8092  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=3, value='0'}]]: <200 OK,AcceptResponse{sequenceNumber=3},{port=[8092]}>
+2017-11-16 20:57:34.262    8090  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=2, value='0'}]
+2017-11-16 20:57:34.262    8090  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=2, value='0'}]
+2017-11-16 20:57:34.262    8090  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=3, value='0'}]
+2017-11-16 20:57:34.262    8090  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=2, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.262    8090  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.263    8090  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=2, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.263    8090  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.263    8091  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=3, value='0'}]
+2017-11-16 20:57:34.264    8091  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.265    8090  ProposerService  : Value 1 had to be overriden with value 0 - retrying value 1
+2017-11-16 20:57:34.267    8090  ProposerService  : Proposing value 1 with sequence number 4
+2017-11-16 20:57:34.272    8092  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=3, value='0'}]
+2017-11-16 20:57:34.272    8092  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=3, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.273    8092  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=2, value='0'}]
+2017-11-16 20:57:34.273    8092  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=2, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.278    8091  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=2, value='0'}]
+2017-11-16 20:57:34.278    8091  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=2, value='0'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.280    8090  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=4}]
+2017-11-16 20:57:34.280    8090  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=4}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8090]}>
+2017-11-16 20:57:34.283    8091  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=4}]
+2017-11-16 20:57:34.283    8091  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=4}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8091]}>
+2017-11-16 20:57:34.284    8092  AcceptorController  : RQ /prepare from 8090 [PrepareRequest{sequenceNumber=4}]
+2017-11-16 20:57:34.284    8092  AcceptorController  : RS to [RQ /prepare from 8090 [PrepareRequest{sequenceNumber=4}]]: <200 OK,PrepareResponse{answer=true, acceptedProposal=null},{port=[8092]}>
+2017-11-16 20:57:34.286    8090  ProposerService  : Got 2/3 prepare responses: {8090=PrepareResponse{answer=true, acceptedProposal=null}, 8091=PrepareResponse{answer=true, acceptedProposal=null}}
+2017-11-16 20:57:34.288    8090  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=4, value='1'}]
+2017-11-16 20:57:34.289    8091  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=4, value='1'}]
+2017-11-16 20:57:34.289    8092  AcceptorController  : RQ /accept from 8090 [AcceptRequest{sequenceNumber=4, value='1'}]
+2017-11-16 20:57:34.290    8090  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=4, value='1'}]]: <200 OK,AcceptResponse{sequenceNumber=4},{port=[8090]}>
+2017-11-16 20:57:34.291    8090  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=4, value='1'}]
+2017-11-16 20:57:34.291    8090  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=4, value='1'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.292    8091  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=4, value='1'}]
+2017-11-16 20:57:34.292    8091  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=4, value='1'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.292    8092  LearnerController  : RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=4, value='1'}]
+2017-11-16 20:57:34.293    8090  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=4, value='1'}]
+2017-11-16 20:57:34.293    8090  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=4, value='1'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.293    8092  LearnerController  : RS to [RQ /learn/ from 8090 [AcceptedProposal{sequenceNumber=4, value='1'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.294    8090  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=4, value='1'}]
+2017-11-16 20:57:34.295    8091  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=4, value='1'}]
+2017-11-16 20:57:34.295    8091  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=4, value='1'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.296    8090  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=4, value='1'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.296    8091  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=4, value='1'}]]: <200 OK,AcceptResponse{sequenceNumber=4},{port=[8091]}>
+2017-11-16 20:57:34.298    8092  AcceptorController  : RS to [RQ /accept from 8090 [AcceptRequest{sequenceNumber=4, value='1'}]]: <200 OK,AcceptResponse{sequenceNumber=4},{port=[8092]}>
+2017-11-16 20:57:34.298    8092  LearnerController  : RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=4, value='1'}]
+2017-11-16 20:57:34.299    8092  LearnerController  : RS to [RQ /learn/ from 8091 [AcceptedProposal{sequenceNumber=4, value='1'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.302    8090  ProposerService  : Got 2/3 accept responses: {8090=AcceptResponse{sequenceNumber=4}, 8091=AcceptResponse{sequenceNumber=4}}
+2017-11-16 20:57:34.302    8092  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=4, value='1'}]
+2017-11-16 20:57:34.302    8092  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=4, value='1'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:34.303    8091  LearnerController  : RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=4, value='1'}]
+2017-11-16 20:57:34.304    8090  ProposerService  : Done proposing value 1
+2017-11-16 20:57:34.304    8090  ProposerService  : Done proposing value 1
+2017-11-16 20:57:34.304    8090  ProposerService  : Done proposing value 1
+2017-11-16 20:57:34.304    8090  ServerController  : RS to [RQ /write/1 from null]: <200 OK,OK,{}>
+2017-11-16 20:57:34.304    8091  LearnerController  : RS to [RQ /learn/ from 8092 [AcceptedProposal{sequenceNumber=4, value='1'}]]: <200 OK,OK,{}>
+2017-11-16 20:57:39.828    8090  ServerController  : RQ /read from 8080
+2017-11-16 20:57:39.829    8090  ServerController  : RS to [RQ /read from 8080]: <200 OK,1,{}>
+2017-11-16 20:57:39.829    8091  ServerController  : RQ /read from 8080
+2017-11-16 20:57:39.829    8091  ServerController  : RS to [RQ /read from 8080]: <200 OK,1,{}>
+2017-11-16 20:57:39.829    8092  ServerController  : RQ /read from 8080
+2017-11-16 20:57:39.829    8092  ServerController  : RS to [RQ /read from 8080]: <200 OK,1,{}>
