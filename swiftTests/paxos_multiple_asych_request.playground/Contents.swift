@@ -3,7 +3,14 @@ import PlaygroundSupport
 
 PlaygroundPage.current.needsIndefiniteExecution = true
 
-for p in 0...2 {
+//Wykonujemy
+//Test pokazujacy livelocka - podatnosc podstawowego alg paxosa - basic paxosa
+
+    let shouldSendRequestsOnlyToOneServer = true
+    let numberOfRounds = 1
+    let numberOfRequestsInEachRound = 2
+
+for p in 0...numberOfRounds-1 {
     let headers = [
         "cache-control": "no-cache",
         "postman-token": "e5fb03cc-c5e6-27ed-7361-2deae241cf76"
@@ -11,8 +18,16 @@ for p in 0...2 {
     
     let testString = UUID.init().uuidString
     
-    for i in 0...1 {
+    for i in 0...numberOfRequestsInEachRound-1 {
         let port = 8090
+        
+        var portString = ""
+        if shouldSendRequestsOnlyToOneServer {
+            portString = "\(port)"
+        } else {
+            portString = "\(port+i%2)"
+        }
+        
         let request = NSMutableURLRequest(url: NSURL(string: "http://localhost:\(port+i)/write/\(i)")! as URL,
                                           cachePolicy: .useProtocolCachePolicy,
                                           timeoutInterval: 10.0)
