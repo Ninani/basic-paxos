@@ -7,15 +7,15 @@ import UIKit
 let dir = try? FileManager.default.url(for: .documentDirectory,
                                        in: .userDomainMask, appropriateFor: nil, create: true)
 
-let outFileURL = dir!.appendingPathComponent("output").appendingPathExtension("txt")
+let outFileURL = dir!.appendingPathComponent("output").appendingPathExtension("html")
 
 
 let outPath = Bundle.main.path(forResource: "output", ofType: "txt")!
-var out = ""
+var outputHTML = ""
 
-out.append("<!DOCTYPE html>\n")
-out.append("<html>\n")
-out.append("<body>\n")
+outputHTML.append("<!DOCTYPE html>\n")
+outputHTML.append("<html>\n")
+outputHTML.append("<body>\n")
 
 if let path = Bundle.main.path(forResource: "paxos", ofType: "txt") {
     do {
@@ -25,9 +25,7 @@ if let path = Bundle.main.path(forResource: "paxos", ofType: "txt") {
         for str in myStrings {
             
             let pat = "[*]*  \\d{4}[*]*"
-            
             let regex = try! NSRegularExpression(pattern: pat, options: [])
-
             var port = ""
             
             do {
@@ -58,18 +56,17 @@ if let path = Bundle.main.path(forResource: "paxos", ofType: "txt") {
                     break
                 }
                 let outString = "<p><font color=\"\(color)\">\(str)</font></p>"
-                print(outString)
-                out.append(outString + "\n")
-                try outString.write(to: outFileURL, atomically: false, encoding: .utf8)
+                outputHTML.append(outString + "\n")
             }
-            
         }
         
     } catch {
         print(error)
     }
-    out.append("</body>\n")
-    out.append("</html>\n")
-    try out.write(to: outFileURL, atomically: false, encoding: .utf8)
+    outputHTML.append("</body>\n")
+    outputHTML.append("</html>\n")
+    try outputHTML.write(to: outFileURL, atomically: false, encoding: .utf8)
+    print(outputHTML)
+    
 }
 

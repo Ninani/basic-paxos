@@ -28,7 +28,7 @@ for p in 0...numberOfRounds-1 {
             portString = "\(port+i%2)"
         }
         
-        let request = NSMutableURLRequest(url: NSURL(string: "http://localhost:\(port+i)/write/\(i)")! as URL,
+        let request = NSMutableURLRequest(url: NSURL(string: "http://localhost:\(portString)/write/\(i)")! as URL,
                                           cachePolicy: .useProtocolCachePolicy,
                                           timeoutInterval: 10.0)
         request.httpMethod = "POST"
