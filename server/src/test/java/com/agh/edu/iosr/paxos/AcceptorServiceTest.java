@@ -99,7 +99,6 @@ public class AcceptorServiceTest {
         String value = "val";
         AcceptorService acceptorService = new AcceptorService(serverMock, null, seqNumber, new AcceptedProposal());
         AcceptResponse acceptResponse = acceptorService.accept(new AcceptRequest(seqNumber, value));
-        // TODO: 11/9/17 check if request has been accepted
         PrepareResponse prepareResponse = acceptorService.prepare(new PrepareRequest(8));
         assertThat(prepareResponse.getAcceptedProposal().getSequenceNumber()).isEqualTo(seqNumber);
         assertThat(prepareResponse.getAcceptedProposal().getValue()).isEqualToIgnoringCase(value);
